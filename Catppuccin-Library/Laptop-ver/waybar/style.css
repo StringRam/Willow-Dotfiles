@@ -1,0 +1,172 @@
+@import "mocha.css";
+* {
+    border: none;
+    border-radius: 0;
+    /* `otf-font-awesome` is required to be installed for icons */
+    font-family: Liberation Mono Nerd;
+    min-height: 20px;
+}
+
+window#waybar {
+    background: transparent;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+#workspaces {
+    margin-right: 8px;
+    border-radius: 10px;
+    transition: none;
+    background: shade(@base, 0.9);
+}
+
+#workspaces button {
+    transition: none;
+    color: #7c818c;
+    background: transparent;
+    padding: 5px;
+    font-size: 14px;
+}
+
+#workspaces button.persistent {
+    color: #7c818c;
+    font-size: 14px;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+#workspaces button:hover {
+    transition: none;
+    box-shadow: inherit;
+    text-shadow: inherit;
+    border-radius: inherit;
+    color: shade(@base, 0.9);
+    background: #7c818c;
+}
+
+#workspaces button.focused {
+    color: white;
+}
+
+#language {
+    padding-left: 16px;
+    padding-right: 8px;
+    border-radius: 10px 0px 0px 10px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#keyboard-state {
+    margin-right: 8px;
+    padding-right: 16px;
+    border-radius: 0px 10px 10px 0px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+
+#mode {
+    padding-left: 16px;
+    padding-right: 16px;
+    border-radius: 10px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#clock {
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 10px 0px 0px 10px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#custom-weather {
+    padding-right: 8px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#custom-swaync {
+    margin-left: 0px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 0px 10px 10px 0px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#pulseaudio {
+    margin-right: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 10px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#pulseaudio.muted {
+    background-color: #90b1b1;
+    color: #2a5c45;
+}
+
+#cpu {
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 10px 0px 0px 10px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#memory {
+    padding-left: 8px;
+    padding-right: 8px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#battery {
+    margin-right: 8px;
+    border-radius: 0px 10px 10px 0px;
+    padding-left: 8px;
+    padding-right: 14px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#tray {
+    margin-right: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-radius: 10px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+#custom-wlogout {
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 10px;
+    transition: none;
+    color: shade(@maroon, 0.9);
+    background: shade(@base, 0.9);
+}
+
+@keyframes blink {
+    to {
+        background-color: shade(@maroon, 0.9);
+        color: #000000;
+    }
+}

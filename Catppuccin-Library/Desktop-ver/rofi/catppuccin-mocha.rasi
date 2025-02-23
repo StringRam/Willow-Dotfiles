@@ -1,0 +1,131 @@
+* {
+    bg-col:  #1e1e2e;
+    bg-col-light: #1e1e2e;
+    border-col: #eba0ac;
+    selected-col: #1e1e2e;
+    maroon: #eba0ac;
+    fg-col: #cdd6f4;
+    fg-col2: #f38ba8;
+    grey: #6c7086;
+    font: "JetBrainsMono Nerd Font 14";
+}
+
+element-text, element-icon , mode-switcher {
+    background-color: inherit;
+    text-color:       inherit;
+}
+
+// Main //
+
+window {
+    height:                      18em;
+    width:                       26em;
+    transparency:                "real";
+    fullscreen:                  false;
+    enabled:                     true;
+    cursor:                      "default";
+    spacing:                     0em;
+    padding:                     0em;
+    border: 2px;
+    border-radius: 7.5px 7.5px 7.5px 7.5px;
+    border-color: @border-col;
+    background-color: @bg-col;
+}
+
+mainbox {
+    children: [ "inputbar" , "listbox" ];
+    background-color: @bg-col;
+}
+
+// SearchBar //
+inputbar {
+    margin: 10px;
+    padding: 20px;
+    children: ["mode-switcher",entry];
+    border-radius: 7.5px; 
+    background-image: url("~/.config/rofi/Searchbar-texture.jpg", width);
+    background-color: @bg-col;
+}
+
+mode-switcher {
+    spacing: 8px;
+    padding: 5px;
+    margin: 8px;
+    border: 2px;
+    border-color: @border-col;
+    border-radius: 7.5px;
+    width: 240px;
+}
+
+entry {
+    padding: 15px;
+    spacing: 8px;
+    margin: 8px;
+    text-color: @fg-col;
+    placeholder: "Search...";
+    border-radius: 7.5px;
+    background-color: @bg-col;
+}
+
+// ListBox //
+
+listbox {
+    spacing:                     0em;
+    padding:                     0px;
+    children:                    [ "listview" ];
+    background-color:            transparent;
+}
+
+listview {
+    border: 0px 0px 0px;
+    padding: 20px;
+    margin: 10px 0px 0px 10px;
+    dynamic: false;
+    columns: 2;
+    lines: 5;
+    background-color: @bg-col;
+}
+
+// Elements //
+
+element {
+    padding: 5px;
+    background-color: @bg-col;
+    text-color: @fg-col  ;
+}
+
+element-icon {
+    size: 25px;
+}
+
+element selected {
+    background-color:  @selected-col ;
+    text-color: @fg-col2  ;
+}
+
+button {
+    padding: 10px;
+    background-color: @bg-col-light;
+    text-color: @grey;
+    vertical-align: 0.5; 
+    horizontal-align: 0.5;
+}
+
+button selected {
+  background-color: @bg-col;
+  text-color: @maroon;
+}
+
+message {
+    background-color: @bg-col-light;
+    margin: 2px;
+    padding: 2px;
+    border-radius: 5px;
+}
+
+textbox {
+    padding: 6px;
+    margin: 20px 0px 0px 20px;
+    text-color: @maroon;
+    background-color: @bg-col-light;
+}

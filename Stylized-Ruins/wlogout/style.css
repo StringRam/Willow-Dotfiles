@@ -1,0 +1,77 @@
+@import url('/home/MDCorrea/.cache/wal/colors-waybar.css');
+* {
+	background-image: none;
+    font-size: 1rem;
+}
+
+window {
+	background-color: transparent;
+}
+
+button {
+    background-color: alpha(@background,.8);
+    outline-style: none;
+    border: none;
+    border-width: 0px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 10%;
+    border-radius: 0px;
+    box-shadow: none;
+    text-shadow: none;
+    animation: gradient_f 20s ease-in infinite;
+}
+
+button:focus {
+    background-color: alpha(@color9,.8);
+    background-size: 15%;
+}
+
+button:hover {
+    background-color: alpha(@color9,.8);
+    background-size: 20%;
+    border-radius: 20px;
+    animation: gradient_f 20s ease-in infinite;
+    transition: all 0.3s cubic-bezier(.55,0.0,.28,1.682);
+}
+
+button:hover#lock {
+    border-radius: 20px 20px 0px 20px;
+    margin : 75px 0px 0px 75px;
+}
+
+button:hover#logout {
+    border-radius: 20px 0px 20px 20px;
+    margin : 0px 0px 75px 75px;
+}
+
+button:hover#shutdown {
+    border-radius: 20px 20px 20px 0px;
+    margin : 75px 75px 0px 0px;
+}
+
+button:hover#reboot {
+    border-radius: 0px 20px 20px 20px;
+    margin : 0px 75px 75px 0px;
+}
+
+#lock {
+    background-image: image(url("/home/MDCorrea/.config/wlogout/lock.png"));
+    border-radius: 20px 0px 0px 0px;
+    margin : 100px 0px 0px 100px;
+}
+#logout {
+    background-image: image(url("/home/MDCorrea/.config/wlogout/logout.png"));
+    border-radius: 0px 0px 0px 20px;
+    margin : 0px 0px 100px 100px;
+}
+#shutdown {
+    background-image: image(url("/home/MDCorrea/.config/wlogout/power.png"));
+    border-radius: 0px 20px 0px 0px;
+    margin : 100px 100px 0px 0px;
+}
+#reboot {
+    background-image: image(url("/home/MDCorrea/.config/wlogout/restart.png"));
+    border-radius: 0px 0px 20px 0px;
+    margin : 0px 100px 100px 0px;
+}

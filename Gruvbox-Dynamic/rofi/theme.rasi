@@ -1,0 +1,138 @@
+
+
+// Main //
+window {
+    height:                      25em;
+    width:                       50em;
+    transparency:                "real";
+    fullscreen:                  false;
+    enabled:                     true;
+    cursor:                      "default";
+    spacing:                     0em;
+    padding:                     0em;
+    border-color:                transparent;
+    background-color:            transparent;
+}
+mainbox {
+    enabled:                     true;
+    spacing:                     0em;
+    padding:                     0em;
+    orientation:                 horizontal;
+    children:                    [ "listbox" , "inputbar" ];
+    border:                      3px;
+    border-color:              #7C7259;
+    border-radius:               2em;
+    background-color:            transparent;
+}
+
+
+// Inputs //
+inputbar {
+    enabled:                     true;
+    width:                       30em;
+    spacing:                     0em;
+    padding:                     0em;
+    children:                    [ "entry" , "mode-switcher" ];
+    expand:                      false;
+    background-color:            transparent;
+    background-image:            url("Searchbar-texture.jpg", width);
+}
+entry {
+    enabled:                     false;
+}
+
+// Modes //
+mode-switcher{
+    orientation:                 vertical;
+    enabled:                     true;
+    width:                       3.8em;
+    padding:                     9.2em 0.5em 9.2em 0.5em;
+    spacing:                     1.2em;
+    background-color:            transparent;
+}
+button {
+    cursor:                      pointer;
+    border-radius:               2em;
+    background-color:          rgba(29, 29, 26, 1);
+    text-color:                rgba(195, 193, 191, 1);
+}
+button selected {
+    background-color:          rgba(195, 193, 191, 1);
+    text-color:                rgba(29, 29, 26, 1);
+}
+
+// Lists //
+listbox {
+    spacing:                     0em;
+    padding:                     0em;
+    children:                    [ "dummy" , "listview" , "dummy" ];
+    background-color:          rgba(29, 29, 26, 0.8);
+    expand:                      false;
+    width:                       24em;
+}
+listview {
+    enabled:                     true;
+    spacing:                     0em;
+    padding:                     1em 2em 1em 2em;
+    columns:                     1;
+    lines:                       7;
+    cycle:                       true;
+    dynamic:                     true;
+    scrollbar:                   false;
+    layout:                      vertical;
+    reverse:                     false;
+    expand:                      false;
+    fixed-height:                true;
+    fixed-columns:               true;
+    cursor:                      "default";
+    background-color:            transparent;
+    text-color:                rgba(195, 193, 191, 0.8);
+}
+dummy {
+    background-color:            transparent;
+    expand:                      true;
+}
+
+
+// Elements //
+element {
+    enabled:                     true;
+    spacing:                     1em;
+    padding:                     0.5em;
+    cursor:                      pointer;
+    background-color:            transparent;
+    text-color:                rgba(195, 193, 191, 0.8);
+}
+element selected.normal {
+    background-color:          #493812;
+    border-radius:               1em;
+    text-color:                rgba(195, 193, 191, 0.8);
+}
+element-icon {
+    size:                        2.2em;
+    cursor:                      inherit;
+    background-color:            transparent;
+    text-color:                  inherit;
+}
+element-text {
+    vertical-align:              0.5;
+    horizontal-align:            0.0;
+    cursor:                      inherit;
+    background-color:            transparent;
+    text-color:                  inherit;
+}
+
+// Error message //
+error-message {
+    text-color:                rgba(195, 193, 191, 0.8);
+    background-color:          rgba(29, 29, 26, 0.8);
+    text-transform:              capitalize;
+    children:                    [ "textbox" ];
+}
+
+textbox {
+    text-color:                  inherit;
+    background-color:            inherit;
+    vertical-align:              0.5;
+    horizontal-align:            0.5;
+}

@@ -4,7 +4,7 @@ Custom dotfiles for my hyprland setups, includes userChrome file for firefox cus
 ## Currently available themes:
  - Dwarf-Fortress-LB
  - Catppuccin-Library
- - Stylized-Ruins
+ - Gruvbox-Dynamic
  - Vertical Firefox CSS
 
 All credit to the wonderful communities and developers that made this possible.

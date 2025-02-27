@@ -3,7 +3,7 @@
 // Main //
 window {
     height:                      25em;
-    width:                       50em;
+    width:                       46em;
     transparency:                "real";
     fullscreen:                  false;
     enabled:                     true;
@@ -29,10 +29,10 @@ mainbox {
 // Inputs //
 inputbar {
     enabled:                     true;
-    width:                       30em;
+    width:                       22em;
     spacing:                     0em;
     padding:                     0em;
-    children:                    [ "entry" , "mode-switcher" ];
+    children:                    [ "entry" , "mode-switcher"];
     expand:                      false;
     background-color:            transparent;
     background-image:            url("Searchbar-texture.jpg", width);
@@ -45,7 +45,7 @@ entry {
 mode-switcher{
     orientation:                 vertical;
     enabled:                     true;
-    width:                       3.8em;
+    width:                       3em;
     padding:                     9.2em 0.5em 9.2em 0.5em;
     spacing:                     1.2em;
     background-color:            transparent;

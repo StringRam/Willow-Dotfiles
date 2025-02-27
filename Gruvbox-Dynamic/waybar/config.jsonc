@@ -8,11 +8,12 @@
     "spacing": 4, // Gaps between modules (4px)
     // Choose the order of the modules
     "modules-left": [
+        "custom/notification",
         "clock",
-        "hyprland/workspaces"
+        "hyprland/window"
     ],
     "modules-center": [
-        "hyprland/window"
+        "hyprland/workspaces"
     ],
     "modules-right": [
         "cpu",
@@ -20,14 +21,23 @@
         "temperature",
         "battery",
         "battery#bat2",
+        "custom/endpoint",
         "tray"
     ],
     // Modules configuration
-    
+    "custom/notification": {
+            "tooltip": false,
+            "format": "",
+            "on-click": "swaync-client -t -sw",
+            "escape": true
+        },
     "clock": {
         // "timezone": "America/Montevideo",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format-alt": "{:%Y-%m-%d}"
+    },
+    "hyprland/window": {
+        "icon": true
     },
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -35,27 +45,22 @@
         "warp-on-scroll": false,
         "format": "{icon}",
         "format-icons": {
-            "urgent": "",
-            "focused": "",
-            "default": ""
+            "active": "",
+            "default": "",
+            "empty": ""
         },
         "persistent-workspaces": {
             "1": ["DP-2"],
             "2": ["HDMI-A-1"],
-            "3": [],
-            "4": []
+            "*": [ 3,4 ]
         }
-    },
-    "tray": {
-        // "icon-size": 21,
-        "spacing": 10
     },
     "cpu": {
         "format": "{usage}% ",
         "tooltip": false
     },
     "memory": {
-        "format": "{}% "
+        "format": "{}% "
     },
     "temperature": {
         // "thermal-zone": 2,
@@ -82,5 +87,13 @@
     },
     "battery#bat2": {
         "bat": "BAT2"
+    },
+    "custom/endpoint":{
+        "format": "|",
+        "tooltip": false
+    },
+    "tray": {
+        // "icon-size": 21,
+        "spacing": 10
     }
 }

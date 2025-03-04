@@ -69,12 +69,12 @@
                     "type": "toggle"
                 },
                 {
-                    "label": "",
-                    "command": "grim -g $(slurp) - | wl-copy && wl-paste > ~/Pictures/Screenshots/Screenshot-$(date +%F_%T).png"
-                },
-                {
                     "label": "",
                     "command": "kitty sh -c 'yay -Syu --noconfirm; echo Done - Press enter to exit; read'"
+                },
+                {
+                    "label": "",
+                    "command": "wlogout -b 2"
                 }
             ]
         }

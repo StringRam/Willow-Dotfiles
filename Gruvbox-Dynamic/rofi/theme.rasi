@@ -1,4 +1,4 @@
-
+@import "~/.cache/wal/colors-rofi-dark.rasi"
 
 // Main //
 window {
@@ -14,14 +14,13 @@ window {
     background-color:            transparent;
 }
 mainbox {
-    enabled:                     true;
-    spacing:                     0em;
-    padding:                     0em;
-    orientation:                 horizontal;
-    children:                    [ "listbox" , "inputbar" ];
-    border:                      3px;
-    border-color:              #7C7259;
-    border-radius:               2em;
+    enabled:                               true;
+    spacing:                                0em;
+    padding:                               0em;
+    orientation:                         horizontal;
+    children:                               [ "listbox" , "inputbar" ];
+    border:                                  3px;
+    border-radius:                    2em;
     background-color:            transparent;
 }
 
@@ -104,7 +103,6 @@ element {
     text-color:                rgba(195, 193, 191, 0.8);
 }
 element selected.normal {
-    background-color:          #493812;
     border-radius:               1em;
     text-color:                rgba(195, 193, 191, 0.8);
 }

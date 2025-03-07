@@ -33,6 +33,7 @@
         },
     "clock": {
         // "timezone": "America/Montevideo",
+        "format": "{:%H:%M | %A %Od}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "format-alt": "{:%Y-%m-%d}"
     },
@@ -45,8 +46,8 @@
         "warp-on-scroll": false,
         "format": "{icon}",
         "format-icons": {
-            "active": "",
-            "default": "",
+            "active": "",
+            "default": "",
             "empty": ""
         },
         "persistent-workspaces": {

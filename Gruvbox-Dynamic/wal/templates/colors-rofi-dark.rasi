@@ -1,0 +1,7 @@
+* {{
+    border-color: {color2};
+}}
+
+element selected.normal {{
+    background-color:          {color2};
+}}

@@ -8,7 +8,8 @@
     "type": "kitty",
     "width": 26,
     "padding": {
-        "top": 1
+        "top": 2,
+        "left": 2
     }
   },
   "display": {

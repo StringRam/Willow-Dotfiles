@@ -1,15 +1,19 @@
+![📦 Downloads](https://img.shields.io/github/downloads/StringRam/Willow-arch/total?label=📦%20Downloads)
+![📄 License](https://img.shields.io/github/license/StringRam/Willow-arch?label=📄%20License)
+![⭐ Stars](https://img.shields.io/github/stars/StringRam/Willow-arch?label=⭐%20Stars)
+
+
 # 🌿 Willow-Dotfiles
 
 Personal dotfiles for my Quickshell-Hyprland setup, a streamlined Linux workflow, themed around willow trees.
 
----
 
 ## 🎬 Desktop Workflow Demo
 
 <!-- Replace the link below with your actual video or GIF when ready -->
-[![Watch the workflow video](https://img.shields.io/badge/Watch-Workflow%20Video-blue?logo=youtube)](https://your.video.link.here)
+[![Watch the workflow video](https://img.shields.io/badge/Watch-Workflow%20Video-blue?logo=youtube)](link.here)
 
----
+
 
 ## ✨ Features
 
@@ -19,7 +23,6 @@ Personal dotfiles for my Quickshell-Hyprland setup, a streamlined Linux workflow
 - Fastfetch and pywal integration
 - Easy wallpaper switching and color sync
 
----
 
 ## 🚀 Installation
 
@@ -30,7 +33,6 @@ cd ~/.dotfiles
 ```
 > This script is meant to be run after the [Willow-Arch](https://github.com/StringRam/Willow-arch) script.
 
----
 
 ## 🗂️ Directory Structure
 
@@ -49,14 +51,12 @@ Dotfiles/
 ```
 </details>
 
----
 
 ## 🤝 Contributions
 
 Contributions, suggestions, and constructive feedback are welcome.  
 Feel free to open an issue or pull request.
 
----
 
 ## 📜 License
 

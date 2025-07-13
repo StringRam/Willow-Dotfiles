@@ -15,6 +15,3 @@ Thumbs.db
 *.pyc
 *.o
 *.out
-
-# Ignore user-specific config
-*.local

@@ -8,14 +8,14 @@
 Personal dotfiles for my Quickshell-Hyprland setup, a streamlined Linux workflow, themed around willow trees.
 
 
-## 🎬 Desktop Workflow Demo
+## Desktop Workflow Demo
 
 <!-- Replace the link below with your actual video or GIF when ready -->
 [![Watch the workflow video](https://img.shields.io/badge/Watch-Workflow%20Video-blue?logo=youtube)](link.here)
 
 
 
-## ✨ Features
+## Features
 
 - Hyprland configuration with custom Quickshell theming
 - Custom scripts for automation and workflow
@@ -24,11 +24,12 @@ Personal dotfiles for my Quickshell-Hyprland setup, a streamlined Linux workflow
 - Easy wallpaper switching and color sync
 
 
-## 🚀 Installation
+## Installation
 
 ```sh
-git clone https://github.com/StringRam/Dotfiles-StringRam.git ~/.dotfiles
-cd ~/.dotfiles
+git clone https://github.com/StringRam/Willow-Dotfiles.git ~/Willow-Dotfiles
+cd ~/Willow-Dotfiles
+chmod +x install.sh
 ./install.sh
 ```
 > This script is meant to be run after the [Willow-Arch](https://github.com/StringRam/Willow-arch) script.
@@ -44,15 +45,13 @@ Dotfiles/
 ├── hypr/           # Hyprland configs and scripts
 ├── kitty/          # Kitty terminal themes and sessions
 ├── rofi/           # Rofi launcher themes
-├── swaync/         # Swaync notification center configs
 ├── wal/            # Pywal templates for color syncing
-├── waybar/         # Waybar status bar configs
 └── fastfetch/      # Fastfetch config for system info
 ```
 </details>
 
 
-## 🤝 Contributions
+## Contributions
 
 Contributions, suggestions, and constructive feedback are welcome.  
 Feel free to open an issue or pull request.

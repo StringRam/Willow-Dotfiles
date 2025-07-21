@@ -21,7 +21,7 @@ Variants {
       }
 
       implicitHeight: 30
-
+      
       Text {
         id: clock
         anchors.centerIn: parent

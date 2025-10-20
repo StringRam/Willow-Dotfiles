@@ -15,10 +15,8 @@
     enable_config_hot_reload: true,
     status_update_interval_ms: 1000,
     rewind_to_start_sec: None,
-    keep_state_on_song_change: true,
     reflect_changes_to_playlist: false,
     select_current_song_on_change: false,
-    ignore_leading_the: false,
     browser_song_sort: [Disc, Track, Artist, Title],
     directories_sort: SortFormat(group_by_type: true, reverse: false),
     album_art: (
@@ -94,12 +92,11 @@
             "K":         MoveUp,
             "D":         Delete,
             "B":         ShowInfo,
-            "<C-z>":     ContextMenu(),
-            "<C-s>":     Save(kind: Modal(all: false, duplicates_strategy: Ask)),
         },
         queue: {
             "D":       DeleteAll,
             "<CR>":    Play,
+            "<C-s>":   Save,
             "a":       AddToPlaylist,
             "d":       Delete,
             "C":       JumpToCurrent,
@@ -108,8 +105,6 @@
     ),
     search: (
         case_sensitive: false,
-        ignore_diacritics: false,
-        search_button: false,
         mode: Contains,
         tags: [
             (value: "any",         label: "Any Tag"),
@@ -124,35 +119,13 @@
     artists: (
         album_display_mode: SplitByDate,
         album_sort_by: Date,
-        album_date_tags: [Date],
     ),
     tabs: [
         (
             name: "Queue",
             pane: Split(
                 direction: Horizontal,
-                panes: [
-                    (
-                        size: "40%",
-                        pane: Split(
-                            direction: Vertical,
-                            panes: [
-                                (
-                                    size: "3",
-                                    pane: Pane(Lyrics)
-                                ),
-                                (
-                                    size: "100%",
-                                    pane: Pane(AlbumArt)
-                                ),
-                            ],
-                        ),
-                    ),
-                    (
-                        size: "60%",
-                        pane: Pane(Queue)
-                    ),
-                ],
+                panes: [(size: "40%", pane: Pane(AlbumArt)), (size: "60%", pane: Pane(Queue))],
             ),
         ),
         (
@@ -181,3 +154,4 @@
         ),
     ],
 )
+

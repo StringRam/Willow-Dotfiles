@@ -71,13 +71,15 @@ install_pacman_packages() {
 # The script will skip AUR installation if this array is empty.
 AUR_PACKAGES=(
     "greetd-regreet-git"
-    "wlogout"
     "hyprpicker"
     "python-pywal16"
     "python-pywalfox"
-    "zsh-theme-powerlevel10k-git"
+    "quickshell-git"
+    "safeeyes"
     "visual-studio-code-bin"
     "vesktop"
+    "wlogout"
+    "zsh-theme-powerlevel10k-git"
 )
 
 install_aur_packages() {

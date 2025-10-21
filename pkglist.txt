@@ -13,13 +13,10 @@ hyprshot
 #                            Essentials
 #└──────────────────────────────  ──────────────────────────────┘
 swww
-swaync
 pipewire
 pipewire-pulse
 pavucontrol
 wireplumber
-mpd
-rmpc
 playerctl
 xdg-desktop-portal-hyprland
 qt5-wayland
@@ -30,9 +27,19 @@ uwsm
 
 
 #┌──────────────────────────────  ──────────────────────────────┐
+#                            Qt tools
+#└──────────────────────────────  ──────────────────────────────┘
+qt5-graphicaleffects
+qt5-imageformats
+qt5-multimedia
+qt5-quickcontrols2
+qt5-svg
+qt6-5compat
+
+
+#┌──────────────────────────────  ──────────────────────────────┐
 #                            Core apps
 #└──────────────────────────────  ──────────────────────────────┘
-waybar
 rofi-wayland
 nautilus
 kitty
@@ -53,3 +60,5 @@ gnome-disk-utility
 gnome-calculator
 gnome-keyring
 eog
+mpd
+rmpc

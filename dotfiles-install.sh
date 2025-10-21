@@ -50,7 +50,14 @@ check_aur_helper() {
 #                      Packages installation
 #└──────────────────────────────  ──────────────────────────────┘
 read_pkglist() {
-    local pkgfile="pkglist.txt"
+    local script_dir pkgfile
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    pkgfile="$script_dir/pkglist.txt"
+
+    if [[ ! -f "$pkgfile" ]]; then
+        error_print "Package list not found at $pkgfile"
+        exit 1
+    fi
     packages=()
 
     while IFS= read -r line || [[ -n $line ]]; do

@@ -17,7 +17,6 @@ pipewire
 pipewire-pulse
 pavucontrol
 wireplumber
-playerctl
 xdg-desktop-portal-hyprland
 qt5-wayland
 qt6-wayland

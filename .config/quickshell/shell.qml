@@ -1,4 +1,4 @@
-// shell.qml
+import components
 import Quickshell
 
 Scope {

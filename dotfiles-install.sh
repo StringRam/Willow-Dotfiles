@@ -279,7 +279,7 @@ main() {
     install_pacman_packages
     install_aur_packages
     configure_regreet
-    install_fonts
+#    install_fonts
     changeshell_zsh
     apply_stow
     make_config_scripts_executable

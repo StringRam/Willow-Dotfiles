@@ -36,42 +36,42 @@ button:hover {
 }
 
 button:hover#lock {
-    border-radius: 20px 20px 20px 20px;
+    border-radius: 20px;
     margin : 0em 0px 0px 0em;
 }
 
 button:hover#logout {
-    border-radius: 20px 20px 20px 20px;
+    border-radius: 20px;
     margin : 0px 0px 0px 0px;
 }
 
 button:hover#shutdown {
-    border-radius: 20px 20px 20px 20px;
+    border-radius: 20px;
     margin : 0px 0px 0px 0px;
 }
 
 button:hover#reboot {
-    border-radius: 20px 20px 20px 20px;
+    border-radius: 20px;
     margin : 0px 0px 0px 0px;
 }
 
 #lock {
     background-image: image(url("/home/MDCorrea/.config/wlogout/lock.png"));
     border-radius: 20px 0px 0px 20px;
-    margin : 2em 0em 2em 0px;
+    margin : 3rem 0rem 3rem 0rem;
 }
 #logout {
     background-image: image(url("/home/MDCorrea/.config/wlogout/logout.png"));
     border-radius: 0px 0px 0px 0px;
-    margin : 2em 0em 2em 0px;
+    margin : 3rem 0rem 3rem 0rem;
 }
 #shutdown {
     background-image: image(url("/home/MDCorrea/.config/wlogout/power.png"));
     border-radius: 0px 0px 0px 0px;
-    margin : 2em 0em 2em 0px;
+    margin : 3rem 0rem 3rem 0rem;
 }
 #reboot {
     background-image: image(url("/home/MDCorrea/.config/wlogout/restart.png"));
     border-radius: 0px 20px 20px 0px;
-    margin : 2em 0em 2em 0px;
+    margin : 3rem 0rem 3rem 0rem;
 }

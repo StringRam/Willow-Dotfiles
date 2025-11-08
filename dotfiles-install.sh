@@ -147,7 +147,7 @@ install_fonts() {
     # Determine script directory and assets directory
     local script_dir fonts_src fonts_dest ttf_files
     script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    fonts_src="$script_dir/Dwarf-Fortress-Assets"
+    fonts_src="$script_dir/.config/fonts"
     fonts_dest="${XDG_DATA_HOME:-$HOME/.local/share}/fonts"
 
     mkdir -p "$fonts_dest"
@@ -279,7 +279,7 @@ main() {
     install_pacman_packages
     install_aur_packages
     configure_regreet
-#    install_fonts
+    install_fonts
     changeshell_zsh
     apply_stow
     make_config_scripts_executable

@@ -1,6 +1,7 @@
 @import url('/home/MDCorrea/.cache/wal/colors-waybar.css');
 * {
 	background-image: none;
+    font-family: Nunito Sans Medium;
     font-size: 1rem;
 }
 

@@ -24,7 +24,6 @@ Scope {
       RowLayout {
         anchors.fill: parent
         anchors.margins: 6
-        spacing: 10
 
         Workspaces {
           id: workspaceDisplay

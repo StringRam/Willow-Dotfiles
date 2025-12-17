@@ -1,36 +1,29 @@
 // Workspaces.qml — Quickshell v0.2.1 (con verificación segura)
 import Quickshell
+import Quickshell.Wayland
 import Quickshell.Hyprland
 import QtQuick
+import QtQuick.Layouts
 
-Row {
-    id: workspaceDisplay
-    spacing: 6
-    property int count: 5
-
-    // Verificamos que el servicio esté disponible antes de usarlo
-    readonly property var hypr: Quickshell.Services ? Quickshell.Services.hyprland : null
+RowLayout {
+    spacing: 8
 
     Repeater {
-        id: wsRepeater
-        model: hypr ? hypr.workspaces : []
+        model: 9
 
-        delegate: Rectangle {
-            width: 12
-            height: 12
-            radius: 6
+        Text {
+            //Live data coming from Hyprland
+            property var ws: Hyprland.workspaces.values.find(w => w.id === index + 1)
+            property bool isActive: Hyprland.focusedWorkspace?.id === (index + 1)
 
-            color: hypr && (modelData.id === hypr.activeWorkspace.id)
-                ? "#ffffff"
-                : "#555555"
+            text: index + 1
+            color: isActive? "#707C4F" : (ws ? "#6b6b6b" : "#3a3a3a")
+            font {pixelSize: 14; bold: true}
 
-            visible: index < workspaceDisplay.count
-
-            Behavior on color { ColorAnimation { duration: 150 } }
-
+            // Click to switch workspace
             MouseArea {
                 anchors.fill: parent
-                onClicked: if (hypr) hypr.dispatch(`workspace ${modelData.id}`)
+                onClicked: Hyprland.dispatch("workspace " + (index + 1))
             }
         }
     }

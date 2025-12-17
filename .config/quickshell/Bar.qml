@@ -17,7 +17,7 @@ Scope {
         left: true
         right: true
       }
-
+      
       implicitHeight: 30
 
       // Barra principal
@@ -28,7 +28,6 @@ Scope {
 
         Workspaces {
           id: workspaceDisplay
-          count: 5
           Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
         }
 
@@ -41,11 +40,9 @@ Scope {
 
         Item { Layout.fillWidth: true }
 
-        Tray {
-          id: systemTray
-          Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-        }
+
       }
     }
   }
 }
+

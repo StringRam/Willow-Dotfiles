@@ -9,10 +9,10 @@ import QtQuick
 Singleton {
   id: root
   property string time
-
+  
   Process {
     id: dateProc
-    command: ["date"]
+    command: ["date", "+%H:%M"]
     running: true
 
     stdout: StdioCollector {

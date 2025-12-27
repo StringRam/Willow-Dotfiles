@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-WALLPAPER_DIR="/home/MDCorrea/.config/hypr/Images"
+WALLPAPER_DIR="$HOME/.config/hypr/Images"
 
 SELECTED_WALLPAPER=$(find "$WALLPAPER_DIR" -type f -exec basename {} \; | rofi -dmenu  --prompt "Select Wallpaper:")
 

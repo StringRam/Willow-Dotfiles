@@ -56,7 +56,6 @@ firefox
 #└──────────────────────────────  ──────────────────────────────┘
 nwg-look
 gnome-disk-utility
-gnome-calculator
 gnome-keyring
 eog
 mpd

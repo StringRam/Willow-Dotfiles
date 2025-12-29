@@ -38,7 +38,10 @@ Scope {
 
         Item { Layout.fillWidth: true }
 
-
+        SystemTray {
+          id: systemTray
+          Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+        }
       }
     }
   }

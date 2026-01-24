@@ -3,18 +3,9 @@
 # Willow tree inspired Hyprland setup
 # MIT License (c) 2025 Mateo Correa Franco
 
-#┌──────────────────────────────  ──────────────────────────────┐
-#                     Fancy text formatting stuff
-#└──────────────────────────────  ──────────────────────────────┘
-BOLD='\033[1m'
-RED='\033[31m'
-GREEN='\033[32m'
-YELLOW='\033[33m'
-RESET='\033[0m'
-
-info_print()  { echo -e "${BOLD}${GREEN}[ o ] $1${RESET}"; }
-input_print() { echo -ne "${BOLD}${YELLOW}[ o ] $1${RESET}"; }
-error_print() { echo -e "${BOLD}${RED}[ x ] $1${RESET}"; }
+set -Eeuo pipefail
+SCRIPT_DIR=$(cd -- "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$SCRIPT_DIR/tui.sh"
 
 #┌──────────────────────────────  ──────────────────────────────┐
 #                     Basic safety checks
@@ -77,15 +68,10 @@ install_pacman_packages() {
 # AUR packages: list your AUR packages here (replace the placeholders).
 # The script will skip AUR installation if this array is empty.
 AUR_PACKAGES=(
-    "greetd-regreet-git"
     "hyprpicker"
-    "python-pywal16"
-    "python-pywalfox"
-    "quickshell-git"
     "safeeyes"
     "visual-studio-code-bin"
     "vesktop"
-    "wlogout"
     "zsh-theme-powerlevel10k-git"
 )
 

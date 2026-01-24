@@ -1,4 +1,13 @@
 #┌──────────────────────────────  ──────────────────────────────┐
+#                            Qt tools
+#└──────────────────────────────  ──────────────────────────────┘
+noto-fonts
+adobe-source-han-sans-cn-fonts
+adobe-source-han-sans-jp-fonts
+adobe-source-han-sans-kr-fonts
+ttf-jetbrains-mono-nerd
+
+#┌──────────────────────────────  ──────────────────────────────┐
 #                            Hyprland
 #└──────────────────────────────  ──────────────────────────────┘
 hyprland
@@ -6,13 +15,14 @@ hyprlock
 hypridle
 hyprsunset
 hyprpolkitagent
+hyprpaper
 hyprshot
 
 
 #┌──────────────────────────────  ──────────────────────────────┐
 #                            Essentials
 #└──────────────────────────────  ──────────────────────────────┘
-swww
+quickshell
 pipewire
 pipewire-pulse
 pavucontrol
@@ -20,7 +30,6 @@ wireplumber
 xdg-desktop-portal-hyprland
 qt5-wayland
 qt6-wayland
-noto-fonts
 cliphist
 uwsm
 
@@ -60,3 +69,8 @@ gnome-keyring
 eog
 mpd
 rmpc
+obsidian
+foliate
+moonlight-qt
+qbittorrent
+libreoffice-fresh

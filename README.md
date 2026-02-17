@@ -62,4 +62,4 @@ Feel free to open an issue or pull request.
 MIT License  
 © 2025 Mateo Correa Franco
 
-> Credits to the crators of: [hyprwm](https://github.com/hyprwm) and [quickshell](https://github.com/quickshell-mirror/quickshell).
+> Credits to the creators of: [hyprwm](https://github.com/hyprwm) and [quickshell](https://github.com/quickshell-mirror/quickshell).

@@ -16,10 +16,9 @@ Scope {
         left: true
         right: true
       }
-      
+
       implicitHeight: 30
 
-      // Barra principal
       RowLayout {
         anchors.fill: parent
         anchors.margins: 6
@@ -42,8 +41,12 @@ Scope {
           id: systemTray
           Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
         }
+
+        BatteryIndicator {
+          id: batteryIndicator
+          Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+        }
       }
     }
   }
 }
-

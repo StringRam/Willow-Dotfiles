@@ -15,7 +15,7 @@ ColumnLayout {
         Layout.alignment: Qt.AlignHCenter
         text: {
             if (!batt || !batt.ready) return ""
-            var arrow = batt.changeRate > 0 ? "⚡" : (batt.changeRate < 0 ? "↓" : "•")
+            var arrow = batt.state == 1 ? "⚡" : (batt.state == 2 ? "↓" : "•")
             return arrow + " " + Math.round(pct) + "%"
         }
     }

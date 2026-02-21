@@ -1,24 +1,30 @@
-// with this line our type becomes a Singleton
 pragma Singleton
 
 import Quickshell
 import Quickshell.Io
 import QtQuick
 
-// your singletons should always have Singleton as the type
 Singleton {
   id: root
-  property string time
-  
+
+  property string hour: "--"
+  property string minute: "--"
+
   Process {
     id: dateProc
-    command: ["date", "+%H:%M"]
-    running: true
+    command: ["date", "+%H %M"]
 
     stdout: StdioCollector {
-      onStreamFinished: root.time = this.text
+      onStreamFinished: {
+        const parts = this.text.trim().split(/\s+/)
+        root.hour = parts[0] ?? "--"
+        root.minute = parts[1] ?? "--"
+      }
     }
   }
+
+  // Tick inicial
+  Component.onCompleted: dateProc.running = true
 
   Timer {
     interval: 1000

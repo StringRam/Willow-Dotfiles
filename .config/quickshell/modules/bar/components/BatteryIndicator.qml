@@ -16,7 +16,7 @@ RowLayout {
     visible: batt && batt.ready && batt.isLaptopBattery
 
     ProgressBar {
-        Layout.preferredWidth: 80
+        Layout.preferredWidth: 50
         Layout.preferredHeight: 10
         Layout.alignment: Qt.AlignVCenter
         from: 0
@@ -28,7 +28,7 @@ RowLayout {
         Layout.alignment: Qt.AlignVCenter
         text: {
             if (!batt || !batt.ready) return ""
-            var arrow = batt.changeRate > 0 ? "⚡" : (batt.changeRate < 0 ? "↓" : "•")
+            var arrow = batt.state == 1 ? "⚡" : (batt.state == 2 ? "↓" : "•")
             return arrow + " " + Math.round(pct) + "%"
         }
     }

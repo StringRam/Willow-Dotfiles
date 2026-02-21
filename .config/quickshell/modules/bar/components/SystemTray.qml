@@ -1,27 +1,54 @@
-import Quickshell
 import QtQuick
+import Quickshell
+import Quickshell.Services.SystemTray
 
 Column {
     id: tray
     spacing: 8
 
     Repeater {
-        model: (Quickshell.Services && Quickshell.Services.systemTray)
-            ? Quickshell.Services.systemTray.items
-            : []
+        model: SystemTray.items
 
-        delegate: Image {
+        delegate: Item {
+            id: iconItem
+            required property SystemTrayItem modelData
+
             width: 20
             height: 20
-            source: modelData.icon
-            fillMode: Image.PreserveAspectFit
+
+            Image {
+                anchors.fill: parent
+                source: modelData.icon
+                fillMode: Image.PreserveAspectFit
+            }
 
             MouseArea {
                 anchors.fill: parent
-                acceptedButtons: Qt.LeftButton | Qt.RightButton
-                onClicked: (mouse) => {
-                    if (mouse.button === Qt.LeftButton) modelData.activate()
-                    else if (mouse.button === Qt.RightButton) modelData.secondaryActivate()
+                hoverEnabled: true
+                acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+
+                onClicked: (e) => {
+                    const w = iconItem.QSWindow.window
+                    const r = iconItem.QSWindow.itemRect(iconItem) // rect relativo a la ventana
+
+                    if (e.button === Qt.LeftButton) {
+                        if (modelData.onlyMenu && modelData.hasMenu)
+                            modelData.display(w, r.x - 6, r.y + r.height)   // abre menú
+                        else
+                            modelData.activate()
+                        return
+                    }
+
+                    if (e.button === Qt.RightButton) {
+                        if (modelData.hasMenu)
+                            modelData.display(w, r.x - 6, r.y + r.height)   // menú abajo/izq (ideal barra derecha)
+                        else
+                            modelData.secondaryActivate()
+                        return
+                    }
+
+                    if (e.button === Qt.MiddleButton)
+                        modelData.secondaryActivate()
                 }
             }
         }

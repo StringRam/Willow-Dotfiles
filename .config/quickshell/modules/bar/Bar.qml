@@ -13,38 +13,40 @@ Scope {
 
       anchors {
         top: true
-        left: true
         right: true
+        bottom: true
       }
 
-      implicitHeight: 30
+      // Ancho de la barra (ajustá a gusto)
+      implicitWidth: 44
 
-      RowLayout {
+      // Reservar espacio en el lado derecho
+      // (con 3 anchors: top+right+bottom, el zone aplica)
+      exclusiveZone: implicitWidth
+
+      ColumnLayout {
         anchors.fill: parent
         anchors.margins: 6
+        spacing: 10
 
         Workspaces {
-          id: workspaceDisplay
-          Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+          Layout.alignment: Qt.AlignHCenter
         }
 
-        Item { Layout.fillWidth: true }
+        Item { Layout.fillHeight: true } // spacer
 
         ClockWidget {
-          id: clock
-          Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+          Layout.alignment: Qt.AlignHCenter
         }
 
-        Item { Layout.fillWidth: true }
+        Item { Layout.fillHeight: true } // spacer
 
         SystemTray {
-          id: systemTray
-          Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+          Layout.alignment: Qt.AlignHCenter
         }
 
         BatteryIndicator {
-          id: batteryIndicator
-          Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+          Layout.alignment: Qt.AlignHCenter
         }
       }
     }

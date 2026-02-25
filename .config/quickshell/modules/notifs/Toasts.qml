@@ -1,27 +1,25 @@
 import Quickshell
 import Quickshell.Wayland
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
 import qs.services
 import qs.components.containers
+import qs.components.animations
 
 Scope {
   Variants {
     model: Quickshell.screens
 
-    StyledWindow {
+    OverlayWindow {
       required property var modelData
       screen: modelData
       name: "toasts"
 
+      // visible solo si hay toasts
       visible: Notifs.toasts.length > 0
 
-      exclusionMode: ExclusionMode.Ignore
-      WlrLayershell.layer: WlrLayer.Overlay
+      // No robar teclado
       WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
-
-      anchors { top: true; bottom: true; left: true; right: true }
 
       Item {
         anchors.top: parent.top
@@ -29,6 +27,7 @@ Scope {
         anchors.margins: 16
 
         Column {
+          id: stack
           spacing: 10
 
           Repeater {
@@ -42,7 +41,10 @@ Scope {
               color: "#161616"
               border.width: 1
               border.color: "#2a2a2a"
-              opacity: 0.98
+
+              // estado inicial para animación
+              y: -22
+              opacity: 0
 
               Column {
                 anchors.fill: parent
@@ -62,14 +64,18 @@ Scope {
                   wrapMode: Text.Wrap
                   visible: (modelData.body || "") !== ""
                 }
-
-                Row {
-                  spacing: 8
-                  Item { width: 1; height: 1 } // spacer placeholder si querés
-                }
               }
 
-              // Auto-dismiss
+              FallIn {
+                id: fall
+                target: parent
+                fromY: -22
+                toY: 0
+                duration: 180
+              }
+
+              Component.onCompleted: fall.start()
+
               Timer {
                 interval: 4500
                 running: true

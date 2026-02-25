@@ -10,26 +10,21 @@ Scope {
   Variants {
     model: Quickshell.screens
 
-    StyledWindow {
-      id: win
+    OverlayWindow {
       required property var modelData
       screen: modelData
       name: "notifs"
 
       visible: Visibility.notifsOpen
 
-      exclusionMode: ExclusionMode.Ignore
-      WlrLayershell.layer: WlrLayer.Overlay
-      WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-
-      anchors { top: true; bottom: true; left: true; right: true }
-
-      property int _forceNotifsLoad: Notifs.received
-
       ModalOverlay {
         anchors.fill: parent
         open: Visibility.notifsOpen
-        requestClose: () => Visibility.notifsOpen = false
+        requestClose: () => {
+          Visibility.notifsOpen = false
+          Visibility.notifsPanelHovered = false
+          Visibility.notifsHotspotHovered = false
+        }
 
         Rectangle {
           id: panel
@@ -44,38 +39,72 @@ Scope {
           anchors.right: parent.right
           anchors.margins: 12
 
-          MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
+          // Importante: capturar hover para mantener abierto
+          MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            acceptedButtons: Qt.AllButtons
+            onEntered: {
+              Visibility.notifsPanelHovered = true
+              Visibility.refreshNotifsHoverOpen()
+            }
+            onExited: {
+              Visibility.notifsPanelHovered = false
+              Visibility.scheduleRefresh()
+            }
+          }
 
           ColumnLayout {
             anchors.fill: parent
             anchors.margins: 14
             spacing: 10
 
+            RowLayout {
+              Layout.fillWidth: true
+              Text { text: "Notificaciones"; color: "#e5e5e5"; font.pixelSize: 16; font.bold: true }
+              Item { Layout.fillWidth: true }
+              Button { text: "Clear"; onClicked: Notifs.clearAll() }
+            }
+
             Text { text: `received=${Notifs.received} tracked=${Notifs.items.length}`; color: "#aaa" }
 
             ListView {
               Layout.fillWidth: true
               Layout.fillHeight: true
+              clip: true
+              spacing: 8
               model: Notifs.items
 
               delegate: Rectangle {
                 required property var modelData
                 width: ListView.view.width
-                height: implicitHeight
-                radius: 10
+                radius: 12
                 color: "#1a1a1a"
                 border.width: 1
                 border.color: "#262626"
 
-                Column {
-                  anchors.margins: 10
+                ColumnLayout {
                   anchors.fill: parent
-                  spacing: 4
+                  anchors.margins: 10
+                  spacing: 6
+
                   Text { text: modelData.summary || "(sin título)"; color: "#e5e5e5"; font.bold: true; wrapMode: Text.Wrap }
-                  Text { text: modelData.body || ""; color: "#bdbdbd"; wrapMode: Text.Wrap }
+                  Text { text: modelData.body || ""; color: "#bdbdbd"; wrapMode: Text.Wrap; visible: (modelData.body || "") !== "" }
+
+                  RowLayout {
+                    Layout.fillWidth: true
+                    Item { Layout.fillWidth: true }
+                    Button {
+                      text: "Dismiss"
+                      onClicked: {
+                        if (modelData.dismiss) modelData.dismiss()
+                        else modelData.tracked = false
+                      }
+                    }
+                  }
                 }
               }
-            } 
+            }
           }
         }
       }

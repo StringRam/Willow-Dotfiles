@@ -7,12 +7,14 @@ Singleton {
 
   property bool launcherOpen: false
   property bool notifsOpen: false
-  property bool powerOpen: false
+
+  // Para hover-open en esquina:
+  property bool notifsHotspotHovered: false
+  property bool notifsPanelHovered: false
 
   function closeAll() {
     launcherOpen = false
     notifsOpen = false
-    powerOpen = false
   }
 
   function toggleLauncher() {
@@ -27,9 +29,18 @@ Singleton {
     notifsOpen = next
   }
 
-  function togglePower() {
-    const next = !powerOpen
-    closeAll()
-    powerOpen = next
+  function refreshNotifsHoverOpen() {
+    // abre mientras haya hover en hotspot o panel
+    notifsOpen = notifsHotspotHovered || notifsPanelHovered
   }
+
+  Timer {
+    // pequeño delay para que no “parpadee” al cruzar el borde
+    id: hoverCloseTimer
+    interval: 120
+    repeat: false
+    onTriggered: root.refreshNotifsHoverOpen()
+  }
+
+  function scheduleRefresh() { hoverCloseTimer.restart() }
 }

@@ -43,18 +43,17 @@ Scope {
         anchors.fill: parent
 
         MouseArea {
-          width: parent.width / 3
+          width: 24
           height: parent.height
           hoverEnabled: true
 
           onEntered: {
-            topEdge.hoverLeftHandle = true
-            topEdge.openMenu = 0
-            closeTimer.stop()
+            Visibility.notifsHotspotHovered = true
+            Visibility.refreshNotifsHoverOpen()
           }
           onExited: {
-            topEdge.hoverLeftHandle = false
-            topEdge.scheduleRefresh()
+            Visibility.notifsHotspotHovered = false
+            Visibility.scheduleRefresh()
           }
         }
 
@@ -77,21 +76,6 @@ Scope {
         Item { width: parent.width / 3; height: parent.height }
       }
 
-      // ===== Drawer izquierda =====
-      Drawer {
-        id: leftDrawer
-        anchorWindow: topEdge
-        open: topEdge.openMenu === 0
-
-        width: 360
-        height: 260
-
-        anchorX: 12
-        anchorY: topEdge.height
-
-        // Contenido de ejemplo
-        Text { text: "LEFT"; anchors.centerIn: parent; color: "#111" }
-      }
 
       // ===== Drawer centro =====
       Drawer {

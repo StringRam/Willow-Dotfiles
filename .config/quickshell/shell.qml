@@ -6,13 +6,12 @@ import qs.modules.launcher
 import qs.modules.notifs
 import qs.services
 
-Scope {
+  Scope {
+  Component.onCompleted: console.log("Notifs loaded:", Notifs.items.length)
+
   Bar {}
   AnchorPanel {}
   Launcher {}
   NotifCenter {}
-
-  Item {
-    Component.onCompleted: console.log("Notifs loaded:", Notifs.items.length)
-  }
+  Toasts {}   // lo agregamos abajo
 }

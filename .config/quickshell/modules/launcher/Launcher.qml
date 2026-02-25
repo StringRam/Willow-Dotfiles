@@ -1,90 +1,101 @@
+import Quickshell
+import Quickshell.Wayland
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import Quickshell
 import qs.services
-import qs.components.containers  // o como sea tu alias a ModalOverlay
+import qs.components.containers
 
-ModalOverlay {
-  id: overlay
-  open: Visibility.launcherOpen
-  requestClose: () => Visibility.launcherOpen = false
+Scope {
+  Variants {
+    model: Quickshell.screens
 
-  // Panel del launcher
-  Rectangle {
-    id: panel
-    width: 520
-    height: 420
-    radius: 16
-    color: "#141414"
-    border.width: 1
-    border.color: "#2a2a2a"
+    StyledWindow {
+      id: win
+      required property var modelData
+      screen: modelData
+      name: "launcher"
 
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.verticalCenter: parent.verticalCenter
+      visible: Visibility.launcherOpen
 
-    // Evita que click adentro cierre el overlay
-    MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
+      exclusionMode: ExclusionMode.Ignore
+      WlrLayershell.layer: WlrLayer.Overlay
+      WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
-    ColumnLayout {
-      anchors.fill: parent
-      anchors.margins: 14
-      spacing: 10
+      anchors { top: true; bottom: true; left: true; right: true }
 
-      TextField {
-        id: query
-        placeholderText: "Buscar app…"
-        Layout.fillWidth: true
-        focus: true
+      ModalOverlay {
+        anchors.fill: parent
+        open: Visibility.launcherOpen
+        requestClose: () => Visibility.launcherOpen = false
 
-        onAccepted: {
-          if (list.count > 0) {
-            const entry = list.model.get(0).entry
-            entry.execute()
-            Visibility.launcherOpen = false
-          }
-        }
-      }
+        Rectangle {
+          id: panel
+          width: 520
+          height: 420
+          radius: 16
+          color: "#141414"
+          border.width: 1
+          border.color: "#2a2a2a"
+          anchors.centerIn: parent
 
-      ListView {
-        id: list
-        Layout.fillWidth: true
-        Layout.fillHeight: true
-        clip: true
-        spacing: 6
+          MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
 
-        model: LauncherModel { filterText: query.text }
-
-        delegate: Rectangle {
-          required property var entry
-          width: ListView.view.width
-          height: 44
-          radius: 10
-          color: ma.containsMouse ? "#1f1f1f" : "transparent"
-
-          RowLayout {
+          ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 10
+            anchors.margins: 14
             spacing: 10
 
-            // icon (si no lo tenés aún, lo dejamos vacío)
-            // Image { source: entry.icon; width: 24; height: 24 }
-
-            Text {
+            TextField {
+              id: query
+              placeholderText: "Buscar app…"
               Layout.fillWidth: true
-              text: entry.name
-              color: "#e5e5e5"
-              elide: Text.ElideRight
+              focus: true
+              onAccepted: {
+                if (list.count > 0) {
+                  const allEntries = [...DesktopEntries.applications.values];
+                  entry.execute()
+                  Visibility.launcherOpen = false
+                }
+              }
             }
-          }
 
-          MouseArea {
-            id: ma
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: {
-              entry.execute()
-              Visibility.launcherOpen = false
+            ListView {
+              id: list
+              Layout.fillWidth: true
+              Layout.fillHeight: true
+              clip: true
+              spacing: 6
+              model: LauncherModel { filterText: query.text }
+
+              delegate: Rectangle {
+                required property var entry
+                width: ListView.view.width
+                height: 44
+                radius: 10
+                color: ma.containsMouse ? "#1f1f1f" : "transparent"
+
+                RowLayout {
+                  anchors.fill: parent
+                  anchors.margins: 10
+                  Text {
+                    Layout.fillWidth: true
+                    text: entry.name
+                    color: "#e5e5e5"
+                    elide: Text.ElideRight
+                  }
+                }
+
+                MouseArea {
+                  id: ma
+                  anchors.fill: parent
+                  hoverEnabled: true
+                  onClicked: {
+                    entry.execute()
+                    Visibility.launcherOpen = false
+                  }
+                }
+              }
             }
           }
         }

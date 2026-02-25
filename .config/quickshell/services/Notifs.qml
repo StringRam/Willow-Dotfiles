@@ -1,31 +1,27 @@
 pragma Singleton
+import Quickshell
 import QtQuick
 import Quickshell.Services.Notifications
 
 Singleton {
   id: root
 
+  property int received: 0
+  property string lastSummary: ""
+  property string lastBody: ""
+
   NotificationServer {
     id: server
 
     onNotification: (n) => {
-      // Guardar en historial
+      root.received++
+      root.lastSummary = n.summary ?? ""
+      root.lastBody = n.body ?? ""
+      console.log("[Notifs] got:", root.lastSummary, "|", root.lastBody)
+
       n.tracked = true
-
-      // Si querés popups “toast” luego, este es el hook
     }
   }
 
-  // Exponer lista
   readonly property var items: server.trackedNotifications
-
-  function clearAll() {
-    // trackedNotifications son objetos Notification; “dismiss” existe en Notification
-    // Si tu versión no lo tiene, hacemos tracked=false o close().
-    for (let i = items.length - 1; i >= 0; i--) {
-      const n = items[i]
-      if (n.dismiss) n.dismiss()
-      else n.tracked = false
-    }
-  }
 }

@@ -2,6 +2,7 @@ import Quickshell
 import QtQuick
 import QtQuick.Layouts
 import "components"
+import qs.services
 
 Scope {
   Variants {
@@ -47,6 +48,32 @@ Scope {
 
         BatteryIndicator {
           Layout.alignment: Qt.AlignHCenter
+        }
+
+        Text {
+          text: "⌘"
+          color: "#e5e5e5"
+          font.pixelSize: 18
+          horizontalAlignment: Text.AlignHCenter
+          width: parent.width
+
+          MouseArea {
+            anchors.fill: parent
+            onClicked: Visibility.toggleLauncher()
+          }
+        }
+
+        Text {
+          text: "🔔"
+          color: "#e5e5e5"
+          font.pixelSize: 16
+          horizontalAlignment: Text.AlignHCenter
+          width: parent.width
+
+          MouseArea {
+            anchors.fill: parent
+            onClicked: Visibility.toggleNotifs()
+          }
         }
       }
     }

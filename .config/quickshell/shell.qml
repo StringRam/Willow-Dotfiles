@@ -1,12 +1,18 @@
 import Quickshell
+import QtQuick
 import qs.modules.bar
 import qs.modules.anchorPanel
 import qs.modules.launcher
 import qs.modules.notifs
+import qs.services
 
 Scope {
   Bar {}
   AnchorPanel {}
-  Launcher {}    // modules/launcher/Launcher.qml
-  NotifCenter {} // modules/notifs/NotifCenter.qml
+  Launcher {}
+  NotifCenter {}
+
+  Item {
+    Component.onCompleted: console.log("Notifs loaded:", Notifs.items.length)
+  }
 }

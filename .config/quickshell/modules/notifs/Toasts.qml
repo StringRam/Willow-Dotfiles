@@ -14,8 +14,14 @@ Scope {
       screen: modelData
       name: "toasts"
 
+      // Importante: que sea visible cuando hay toasts
       visible: Notifs.toasts.length > 0
+
+      // Importante: NO robar foco
       WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+
+      // DEBUG: si querés comprobar que el window existe
+      // Rectangle { anchors.fill: parent; color: "#ff00ff"; opacity: 0.05 }
 
       Item {
         anchors.top: parent.top
@@ -39,9 +45,9 @@ Scope {
               border.width: 1
               border.color: "#2a2a2a"
 
-              // estado inicial para la caída
+              // Estado inicial “caída”
               y: -22
-              opacity: 0
+              opacity: 1   // <-- para que SIEMPRE sea visible, aunque la anim falle
 
               Column {
                 anchors.fill: parent

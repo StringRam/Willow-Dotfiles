@@ -22,6 +22,7 @@ Singleton {
       body: n.body ?? ""
     }
     toasts = [t, ...toasts].slice(0, 3)
+    console.log("[Toasts] count=", toasts.length, "last=", t.summary)
   }
 
   function dropToast(key) {

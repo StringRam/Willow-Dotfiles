@@ -5,23 +5,42 @@ import QtQuick.Layouts
 
 import qs.components.containers
 
-// Menú custom: overlay fullscreen + panel de menú
 Scope {
   id: root
 
-  // ===== API pública (la usa SystemTray.qml) =====
-  property var menuHandle: null        // QsMenuHandle
+  // ===== API pública =====
+  property var menuHandle: null
   property int anchorX: 0
   property int anchorY: 0
+
   property int menuWidth: 320
   property int rowHeight: 34
   property int pad: 8
   property int radius: 12
+  property int menuCount: 0
 
-  // Para multi-monitor: mostrarse solo en el screen de la barra
   property var targetScreen: null
 
+  // ✅ margen de pantalla (mismo que gap de la barra)
+  property int edgeMargin: 4
+
   function closeMenu() { root.menuHandle = null }
+
+  // ✅ clamp helpers
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(v, hi)) }
+
+  // ✅ corrige anchorY cuando ya conocemos el alto real
+  function adjustToScreen(menuH) {
+    const sw = (root.targetScreen && root.targetScreen.width) ? root.targetScreen.width : 1920
+    const sh = (root.targetScreen && root.targetScreen.height) ? root.targetScreen.height : 1080
+
+    // X (por si acaso)
+    root.anchorX = clamp(root.anchorX, root.edgeMargin, sw - root.menuWidth - root.edgeMargin)
+
+    // Y usando alto REAL del bg
+    const maxY = sh - menuH - root.edgeMargin
+    root.anchorY = clamp(root.anchorY, root.edgeMargin, maxY)
+  }
 
   Variants {
     model: Quickshell.screens
@@ -32,18 +51,23 @@ Scope {
       screen: modelData
       name: "trayMenu"
 
-      // Visible solo si hay menú y este es el screen correcto
       visible: root.menuHandle !== null && (root.targetScreen === null || root.targetScreen === modelData)
-
-      // No robar foco
       WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
       QsMenuOpener {
         id: opener
         menu: root.menuHandle
+        onChildrenChanged: {
+          root.menuCount = opener.children.length
+          // cuando cambia el contenido, re-ajustar con alto real (luego del layout)
+          Qt.callLater(() => root.adjustToScreen(bg.implicitHeight))
+        }
+        Component.onCompleted: {
+          root.menuCount = opener.children.length
+          Qt.callLater(() => root.adjustToScreen(bg.implicitHeight))
+        }
       }
 
-      // Click afuera cierra
       MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
@@ -63,7 +87,9 @@ Scope {
 
         implicitHeight: col.implicitHeight + root.pad * 2
 
-        // Evitar que click adentro cierre
+        // ✅ si el alto cambia (por ejemplo, otro menú), ajustar
+        onImplicitHeightChanged: Qt.callLater(() => root.adjustToScreen(bg.implicitHeight))
+
         MouseArea {
           anchors.fill: parent
           acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton

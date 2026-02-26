@@ -14,45 +14,42 @@ Column {
 
   function openMenuFor(iconItem, trayItem) {
     if (!trayItem.hasMenu || !trayItem.menu) return
+    if (!tray.parentWindow) return
 
+    // 1) Asegurar que el popup salga en el mismo monitor que la barra
     menuPopup.targetScreen = tray.parentWindow.screen
 
     const screenW = tray.parentWindow.screen?.width ?? 1920
     const screenH = tray.parentWindow.screen?.height ?? 1080
+
+    // 2) Barra anclada a la derecha => borde izquierdo del bar en coords de screen
     const barW = tray.parentWindow.width
-
-    // Barra anclada a la derecha (en ese screen)
     const barLeft = screenW - barW
-    const barTop = 0
-
-    // 1) Posición del bloque SystemTray dentro de la barra (en coords "window/item tree")
-    // (tray es el Column root de SystemTray.qml)
-    const trayPosInBar = tray.mapToItem(tray.parentWindow.contentItem, 0, 0)
-
-    // 2) Posición del ícono dentro de tray
-    // iconItem está dentro del Repeater delegado, su y es relativa a tray
-    const iconYInTray = iconItem.y
-
-    // 3) Y global del ícono (screen coords)
-    const iconGlobalY = barTop + trayPosInBar.y + iconYInTray
-
-    // Menú a la izquierda de la barra con gap fijo
     const gap = 4
+
+    // 3) Posición REAL del icono dentro de la barra:
+    // mapear el ícono al contentItem del PanelWindow (coords “bar-local”)
+    const p = iconItem.mapToItem(tray.parentWindow.contentItem, 0, 0)
+
+    // Como la barra está top-to-bottom, el Y local ya es el Y real dentro del screen
+    const iconGlobalY = p.y
+
+    // 4) Tamaño del menú (coincidir con TrayMenuPopup)
     const menuW = 360
     const rowH = 34
     const pad = 8
-    const estCount = 18
-    const menuH = estCount * rowH + pad * 2
+    const count = Math.max(1, menuPopup.menuCount)
+    const menuH = count * rowH + pad * 2 + 6
 
     menuPopup.menuWidth = menuW
 
-    // X fijo pegado a la barra
+    // X fijo pegado al bar (hacia la izquierda)
     let x = barLeft - gap - menuW
     x = clamp(x, 4, screenW - menuW - 4)
 
-    // Y centrado en el ícono y clamp
-    let y = (iconGlobalY + iconItem.height / 2) - (menuH / 2)
-    y = clamp(y, 4, screenH - menuH - 4)
+    // Y centrado en el ícono y clamped
+    let y = iconGlobalY - 6; // el menú “nace” alineado al ícono
+    y = clamp(y, 4, screenH - menuH - 4);
 
     menuPopup.anchorX = Math.round(x)
     menuPopup.anchorY = Math.round(y)

@@ -12,6 +12,5 @@ Scope {
   Bar {}
   AnchorPanel {}
   Launcher {}
-  NotifCenter {}
   Toasts {}
 }

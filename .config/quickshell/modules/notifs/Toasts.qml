@@ -21,8 +21,6 @@ Scope {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.margins: 12
-
-        // “desde el anchorPanel” (tu topEdge mide 4px)
         y: 4
 
         Column {
@@ -32,7 +30,9 @@ Scope {
             model: Notifs.toasts
 
             delegate: Rectangle {
+              id: toast
               required property var modelData
+
               width: 320
               radius: 14
               color: "#161616"
@@ -47,11 +47,25 @@ Scope {
                 anchors.fill: parent
                 anchors.margins: 12
                 spacing: 6
-                Text { text: modelData.summary || "(sin título)"; color: "#e5e5e5"; font.bold: true; wrapMode: Text.Wrap }
-                Text { text: modelData.body || ""; color: "#bdbdbd"; wrapMode: Text.Wrap; visible: (modelData.body || "") !== "" }
+
+                Text {
+                  text: modelData.summary || "(sin título)"
+                  color: "#e5e5e5"
+                  font.bold: true
+                  wrapMode: Text.Wrap
+                  width: parent.width
+                }
+
+                Text {
+                  text: modelData.body || ""
+                  color: "#bdbdbd"
+                  wrapMode: Text.Wrap
+                  width: parent.width
+                  visible: (modelData.body || "") !== ""
+                }
               }
 
-              FallIn { id: fall; target: parent; fromY: -22; toY: 0; duration: 180 }
+              FallIn { id: fall; target: toast; fromY: -22; toY: 0; duration: 180 }
               Component.onCompleted: fall.start()
 
               Timer {

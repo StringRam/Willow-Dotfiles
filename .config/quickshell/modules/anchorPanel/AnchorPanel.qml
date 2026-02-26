@@ -17,24 +17,20 @@ Scope {
 
       Rectangle { anchors.fill: parent; color: "#FFFFFF"; opacity: 0.9 }
 
-      // 0 = left, 1 = center, -1 = ninguno
-      property int openMenu: -1
+      // true = dashboard abierto
+      property bool dashboardOpen: false
+      property bool hoverDashboardHandle: false
 
-      // hover flags (handles)
-      property bool hoverLeftHandle: false
-      property bool hoverCenterHandle: false
-
-      function refreshOpen() {
-        if (hoverLeftHandle || leftDrawer.hovered) { openMenu = 0; return }
-        if (hoverCenterHandle || centerDrawer.hovered) { openMenu = 1; return }
-        openMenu = -1
+      function refreshDashboardOpen() {
+        // abierto mientras hover handle o hover drawer
+        dashboardOpen = hoverDashboardHandle || centerDrawer.hovered
       }
 
       Timer {
         id: closeTimer
         interval: 120
         repeat: false
-        onTriggered: topEdge.refreshOpen()
+        onTriggered: topEdge.refreshDashboardOpen()
       }
 
       function scheduleRefresh() { closeTimer.restart() }
@@ -42,46 +38,47 @@ Scope {
       Row {
         anchors.fill: parent
 
+        // 1) Hotspot notifs (esquina sup izq)
         MouseArea {
           width: 24
           height: parent.height
           hoverEnabled: true
-
           onEntered: {
             Visibility.notifsHotspotHovered = true
-            Visibility.refreshNotifsHoverOpen()
+            Visibility.refreshNotifsHoverHold()
           }
           onExited: {
             Visibility.notifsHotspotHovered = false
-            Visibility.scheduleRefresh()
+            Visibility.refreshNotifsHoverHold()
+          }
+          onClicked: {
+            // click pin/unpin
+            Visibility.toggleNotifsPinned()
           }
         }
 
+        // 2) Área central (dashboard)
         MouseArea {
-          width: parent.width / 3
+          width: parent.width - 24
           height: parent.height
           hoverEnabled: true
 
           onEntered: {
-            topEdge.hoverCenterHandle = true
-            topEdge.openMenu = 1
+            topEdge.hoverDashboardHandle = true
             closeTimer.stop()
+            topEdge.refreshDashboardOpen()
           }
           onExited: {
-            topEdge.hoverCenterHandle = false
+            topEdge.hoverDashboardHandle = false
             topEdge.scheduleRefresh()
           }
         }
-
-        Item { width: parent.width / 3; height: parent.height }
       }
 
-
-      // ===== Drawer centro =====
       Drawer {
         id: centerDrawer
         anchorWindow: topEdge
-        open: topEdge.openMenu === 1
+        open: topEdge.dashboardOpen
 
         width: 420
         height: 280
@@ -90,6 +87,11 @@ Scope {
         anchorY: topEdge.height
 
         Text { text: "CENTER"; anchors.centerIn: parent; color: "#111" }
+      }
+
+      Connections {
+        target: centerDrawer
+        function onHoveredChanged() { topEdge.scheduleRefresh() }
       }
     }
   }

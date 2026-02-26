@@ -20,11 +20,7 @@ Scope {
       ModalOverlay {
         anchors.fill: parent
         open: Visibility.notifsOpen
-        requestClose: () => {
-          Visibility.notifsOpen = false
-          Visibility.notifsPanelHovered = false
-          Visibility.notifsHotspotHovered = false
-        }
+        requestClose: () => Visibility.closeNotifs()
 
         Rectangle {
           id: panel
@@ -36,21 +32,14 @@ Scope {
 
           anchors.top: parent.top
           anchors.bottom: parent.bottom
-          anchors.right: parent.right
+          anchors.left: parent.left
           anchors.margins: 12
 
-          // Importante: capturar hover para mantener abierto
-          MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
-            acceptedButtons: Qt.AllButtons
-            onEntered: {
-              Visibility.notifsPanelHovered = true
-              Visibility.refreshNotifsHoverOpen()
-            }
-            onExited: {
-              Visibility.notifsPanelHovered = false
-              Visibility.scheduleRefresh()
+          // Hover que NO compite con botones
+          HoverHandler {
+            onHoveredChanged: {
+              Visibility.notifsPanelHovered = hovered
+              Visibility.refreshNotifsHoverHold()
             }
           }
 
@@ -65,8 +54,6 @@ Scope {
               Item { Layout.fillWidth: true }
               Button { text: "Clear"; onClicked: Notifs.clearAll() }
             }
-
-            Text { text: `received=${Notifs.received} tracked=${Notifs.items.length}`; color: "#aaa" }
 
             ListView {
               Layout.fillWidth: true
@@ -88,7 +75,7 @@ Scope {
                   anchors.margins: 10
                   spacing: 6
 
-                  Text { text: modelData.summary || "(sin título)"; color: "#e5e5e5"; font.bold: true; wrapMode: Text.Wrap }
+                  Text { text: modelData.summary || "(sin título)"; color: "#eaeaea"; font.bold: true; wrapMode: Text.Wrap }
                   Text { text: modelData.body || ""; color: "#bdbdbd"; wrapMode: Text.Wrap; visible: (modelData.body || "") !== "" }
 
                   RowLayout {

@@ -20,12 +20,12 @@ Item {
 
     // sale desde esquina izq, por debajo del panel
     anchorX: 12
-    anchorY: root.anchorWindow.height + 8
+    anchorY: root.anchorWindow.height
 
     // mantener abierto por hover (si ya tenés esos flags en Visibility)
     onHoveredChanged: {
       Visibility.notifsPanelHovered = hovered
-      Visibility.refreshNotifsHoverHold()
+      Visibility.onNotifsHoverChanged()
     }
 
     NotifsUI.NotifContent { anchors.fill: parent }
@@ -41,7 +41,7 @@ Item {
     height: 320
 
     anchorX: root.anchorWindow.width / 2 - width / 2
-    anchorY: root.anchorWindow.height + 8
+    anchorY: root.anchorWindow.height
 
     DashUI.DashboardContent { anchors.fill: parent }
   }

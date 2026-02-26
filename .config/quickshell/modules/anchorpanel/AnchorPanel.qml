@@ -40,26 +40,26 @@ Scope {
       Row {
         anchors.fill: parent
 
-        // Hotspot Notifs
+        // 1/3 izquierda: NotifCenter
         MouseArea {
-          width: 24
+          width: parent.width / 3
           height: parent.height
           hoverEnabled: true
 
           onEntered: {
             Visibility.notifsHotspotHovered = true
-            Visibility.refreshNotifsHoverHold()
+            Visibility.onNotifsHoverChanged()
           }
           onExited: {
             Visibility.notifsHotspotHovered = false
-            Visibility.refreshNotifsHoverHold()
+            Visibility.onNotifsHoverChanged()
           }
           onClicked: Visibility.toggleNotifsPinned()
         }
 
-        // Handle Dashboard (resto)
+        // 1/3 centro: Dashboard
         MouseArea {
-          width: parent.width - 24
+          width: parent.width / 3
           height: parent.height
           hoverEnabled: true
 
@@ -72,6 +72,12 @@ Scope {
             topEdge.hoverDashboardHandle = false
             topEdge.scheduleRefresh()
           }
+        }
+
+        // 1/3 derecha: vacío (no abre nada)
+        Item {
+          width: parent.width / 3
+          height: parent.height
         }
       }
 

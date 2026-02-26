@@ -65,6 +65,10 @@ PopupWindow {
   MouseArea {
     id: hoverArea
     anchors.fill: parent
+    Item {
+      anchors.fill: parent
+      anchors.topMargin: -6 // aumenta el área de hover hacia arriba
+    }
     hoverEnabled: true
   }
 

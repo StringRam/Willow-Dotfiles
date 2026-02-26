@@ -66,4 +66,13 @@ Singleton {
     closeAll()
     launcherOpen = next
   }
+
+  function onNotifsHoverChanged() {
+    if (notifsHotspotHovered || notifsPanelHovered) {
+      notifsHoverHold = true
+      hoverCloseTimer.stop()
+    } else {
+      scheduleNotifsHoverClose()
+    }
+  }
 }

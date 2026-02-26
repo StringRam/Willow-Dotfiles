@@ -1,56 +1,73 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.SystemTray
+import "."
 
 Column {
-    id: tray
-    spacing: 8
+  id: tray
+  spacing: 8
 
-    Repeater {
-        model: SystemTray.items
+  required property PanelWindow parentWindow  // lo pasás desde Bar.qml
 
-        delegate: Item {
-            id: iconItem
-            required property SystemTrayItem modelData
+  TrayMenuPopup {
+    id: menuPopup
+    parentWindow: tray.parentWindow
+  }
 
-            width: 20
-            height: 20
+  function openMenuFor(iconItem, trayItem) {
+    if (!trayItem.hasMenu || !trayItem.menu) return
 
-            Image {
-                anchors.fill: parent
-                source: modelData.icon
-                fillMode: Image.PreserveAspectFit
-            }
+    // coordenadas del ícono dentro del contentItem de la barra
+    const p = iconItem.mapToItem(tray.parentWindow.contentItem, 0, iconItem.height)
 
-            MouseArea {
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+    menuPopup.maxWidth = 260
+    menuPopup.anchorX = p.x - 260 - 12   // barra derecha → menú hacia la izquierda
+    menuPopup.anchorY = p.y
+    menuPopup.menuHandle = trayItem.menu
+  }
 
-                onClicked: (e) => {
-                    const w = iconItem.QSWindow.window
-                    const r = iconItem.QSWindow.itemRect(iconItem) // rect relativo a la ventana
+  Repeater {
+    model: SystemTray.items
 
-                    if (e.button === Qt.LeftButton) {
-                        if (modelData.onlyMenu && modelData.hasMenu)
-                            modelData.display(w, r.x - 6, r.y + r.height)   // abre menú
-                        else
-                            modelData.activate()
-                        return
-                    }
+    delegate: Item {
+      id: iconItem
+      required property SystemTrayItem modelData
 
-                    if (e.button === Qt.RightButton) {
-                        if (modelData.hasMenu)
-                            modelData.display(w, r.x - 6, r.y + r.height)   // menú abajo/izq (ideal barra derecha)
-                        else
-                            modelData.secondaryActivate()
-                        return
-                    }
+      width: 20
+      height: 20
 
-                    if (e.button === Qt.MiddleButton)
-                        modelData.secondaryActivate()
-                }
-            }
+      Image {
+        anchors.fill: parent
+        source: modelData.icon
+        fillMode: Image.PreserveAspectFit
+      }
+
+      MouseArea {
+        anchors.fill: parent
+        hoverEnabled: true
+        preventStealing: true
+        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+
+        onPressed: (e) => {
+          if (e.button === Qt.RightButton) {
+            tray.openMenuFor(iconItem, modelData)
+            e.accepted = true
+          } else if (e.button === Qt.MiddleButton) {
+            modelData.secondaryActivate()
+            e.accepted = true
+          }
         }
+
+        onClicked: (e) => {
+          if (e.button !== Qt.LeftButton) return
+
+          if (modelData.onlyMenu && modelData.hasMenu) {
+            tray.openMenuFor(iconItem, modelData)
+          } else {
+            modelData.activate()
+          }
+        }
+      }
     }
+  }
 }

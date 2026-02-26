@@ -11,6 +11,7 @@ Scope {
     PanelWindow {
       required property var modelData
       screen: modelData
+      id: barWindow 
 
       anchors {
         top: true
@@ -19,7 +20,7 @@ Scope {
       }
 
       // Ancho de la barra (ajustá a gusto)
-      implicitWidth: 44
+      implicitWidth: 40
 
       // Reservar espacio en el lado derecho
       // (con 3 anchors: top+right+bottom, el zone aplica)
@@ -44,6 +45,7 @@ Scope {
 
         SystemTray {
           Layout.alignment: Qt.AlignHCenter
+          parentWindow: barWindow
         }
 
         BatteryIndicator {

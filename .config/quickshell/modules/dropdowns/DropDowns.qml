@@ -1,8 +1,8 @@
 import QtQuick
 import qs.services
-import "modules/dropdowns"
-import "../notifs/NotifContent.qml" as NotifsUI
-import "../dashboard/DashboardContent.qml" as DashUI
+import qs.modules.dropdowns
+import qs.modules.notifs.components as NotifsUI
+import qs.modules.dashboard.components as DashUI
 
 Item {
   id: root

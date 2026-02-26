@@ -3,7 +3,7 @@ import Quickshell.Wayland
 import QtQuick
 import qs.services
 import qs.components.containers
-import "./components/LauncherContent.qml" as UI
+import qs.modules.launcher.components as UI
 
 Scope {
   Variants {

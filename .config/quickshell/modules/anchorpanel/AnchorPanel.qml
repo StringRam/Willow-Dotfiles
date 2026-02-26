@@ -1,7 +1,7 @@
 import Quickshell
 import QtQuick
 import qs.services
-import "./DropDowns.qml"
+import qs.modules.dropdowns
 
 Scope {
   Variants {

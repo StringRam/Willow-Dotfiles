@@ -16,76 +16,42 @@ Scope {
       implicitHeight: 4
       exclusiveZone: 0
 
-      // Dashboard open state
-      property bool dashboardOpen: false
-      property bool hoverDashboardHandle: false
-
-      function refreshDashboardOpen() {
-        // el drawer lo maneja DropDowns; acá solo decidís si debería abrir
-        dashboardOpen = hoverDashboardHandle || dropdownsDashHovered
-      }
-
-      // DropDowns necesita saber si el drawer está hovered.
-      // Si tu Drawer.qml expone hovered, lo podés bridgear.
-      property bool dropdownsDashHovered: false
-
-      Timer {
-        id: closeTimer
-        interval: 120
-        repeat: false
-        onTriggered: topEdge.refreshDashboardOpen()
-      }
-      function scheduleRefresh() { closeTimer.restart() }
+      // Anchos estables (sin drift)
+      property int third: Math.floor(width / 3)
+      property int leftW: third
+      property int centerW: third
+      property int rightW: width - leftW - centerW
 
       Row {
         anchors.fill: parent
 
-        // 1/3 izquierda: NotifCenter
+        // 1/3 izquierda: Notifs
         MouseArea {
-          width: parent.width / 3
+          width: topEdge.leftW
           height: parent.height
           hoverEnabled: true
 
-          onEntered: {
-            Visibility.notifsHotspotHovered = true
-            Visibility.onNotifsHoverChanged()
-          }
-          onExited: {
-            Visibility.notifsHotspotHovered = false
-            Visibility.onNotifsHoverChanged()
-          }
+          onEntered: { Visibility.notifsHotspotHovered = true; Visibility.updateNotifsHover() }
+          onExited:  { Visibility.notifsHotspotHovered = false; Visibility.updateNotifsHover() }
           onClicked: Visibility.toggleNotifsPinned()
         }
 
         // 1/3 centro: Dashboard
         MouseArea {
-          width: parent.width / 3
+          width: topEdge.centerW
           height: parent.height
           hoverEnabled: true
 
-          onEntered: {
-            topEdge.hoverDashboardHandle = true
-            closeTimer.stop()
-            topEdge.refreshDashboardOpen()
-          }
-          onExited: {
-            topEdge.hoverDashboardHandle = false
-            topEdge.scheduleRefresh()
-          }
+          onEntered: { Visibility.dashHotspotHovered = true; Visibility.updateDashHover() }
+          onExited:  { Visibility.dashHotspotHovered = false; Visibility.updateDashHover() }
+          // si querés pin con click: onClicked: Visibility.toggleDashPinned()
         }
 
-        // 1/3 derecha: vacío (no abre nada)
-        Item {
-          width: parent.width / 3
-          height: parent.height
-        }
+        // 1/3 derecha: vacío
+        Item { width: topEdge.rightW; height: parent.height }
       }
 
-      // Aquí se instancian ambos drawers
-      DropDowns {
-        id: dropdowns
-        anchorWindow: topEdge
-      }
+      DropDowns { anchorWindow: topEdge }
     }
   }
 }

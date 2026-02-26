@@ -37,7 +37,7 @@ PopupWindow {
   Behavior on contentOpacity { NumberAnimation { duration: 120 } }
 
   // PopupWindow solo controla visibilidad
-  visible: open
+  visible: open || hovered
 
   anchor.window: anchorWindow
   anchor.rect.x: anchorX
@@ -65,11 +65,9 @@ PopupWindow {
   MouseArea {
     id: hoverArea
     anchors.fill: parent
-    Item {
-      anchors.fill: parent
-      anchors.topMargin: -6 // aumenta el área de hover hacia arriba
-    }
     hoverEnabled: true
+    acceptedButtons: Qt.NoButton
+    enabled: drawer.contentOpacity > 0.01
   }
 
   default property alias content: contentHost.data

@@ -3,7 +3,7 @@ import Quickshell.Wayland
 import QtQuick
 import qs.services
 import qs.components.containers
-import "./NotifContent.qml" as UI
+import qs.modules.notifs.components as UI
 
 Scope {
   Variants {

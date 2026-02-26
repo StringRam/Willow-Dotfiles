@@ -1,148 +1,159 @@
 import Quickshell
+import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 
-// Menú custom para SystemTrayItem.menu (QsMenuHandle)
-PopupWindow {
-  id: popup
+import qs.components.containers
 
-  // Lo setea SystemTray
-  required property PanelWindow parentWindow
-  property var menuHandle: null   // QsMenuHandle
+// Menú custom: overlay fullscreen + panel de menú
+Scope {
+  id: root
+
+  // ===== API pública (la usa SystemTray.qml) =====
+  property var menuHandle: null        // QsMenuHandle
   property int anchorX: 0
   property int anchorY: 0
-  property int maxWidth: 260
+  property int menuWidth: 320
+  property int rowHeight: 34
+  property int pad: 8
+  property int radius: 12
 
-  visible: menuHandle !== null
+  // Para multi-monitor: mostrarse solo en el screen de la barra
+  property var targetScreen: null
 
-  anchor.window: parentWindow
-  anchor.rect.x: anchorX
-  anchor.rect.y: anchorY
+  function closeMenu() { root.menuHandle = null }
 
-  // Lee children del menú actual
-  QsMenuOpener {
-    id: opener
-    menu: popup.menuHandle
-  }
+  Variants {
+    model: Quickshell.screens
 
-  Rectangle {
-    id: bg
-    width: popup.maxWidth
-    radius: 10
-    color: "#141414"
-    border.width: 1
-    border.color: "#2a2a2a"
+    OverlayWindow {
+      id: overlay
+      required property var modelData
+      screen: modelData
+      name: "trayMenu"
 
-    // alto dinámico: suma delegates
-    implicitHeight: col.implicitHeight + 12
+      // Visible solo si hay menú y este es el screen correcto
+      visible: root.menuHandle !== null && (root.targetScreen === null || root.targetScreen === modelData)
 
-    Column {
-      id: col
-      x: 6
-      y: 6
-      width: bg.width - 12
-      spacing: 2
+      // No robar foco
+      WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-      Repeater {
-        model: opener.children
+      QsMenuOpener {
+        id: opener
+        menu: root.menuHandle
+      }
 
-        delegate: Item {
-          id: row
-          required property QsMenuEntry modelData
+      // Click afuera cierra
+      MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+        onPressed: root.closeMenu()
+      }
 
-          width: col.width
-          implicitHeight: modelData.isSeparator ? 9 : 30
+      Rectangle {
+        id: bg
+        x: root.anchorX
+        y: root.anchorY
+        width: root.menuWidth
+        radius: root.radius
+        clip: true
+        color: "#141414"
+        border.width: 1
+        border.color: "#2a2a2a"
 
-          // Separador
-          Rectangle {
-            visible: row.modelData.isSeparator
-            x: 6
-            width: row.width - 12
-            height: 1
-            y: 4
-            color: "#2a2a2a"
-          }
+        implicitHeight: col.implicitHeight + root.pad * 2
 
-          // Item normal
-          Rectangle {
-            id: itemBg
-            anchors.fill: parent
-            visible: !row.modelData.isSeparator
-            radius: 8
-            color: ma.containsMouse ? "#1f1f1f" : "transparent"
-            opacity: row.modelData.enabled ? 1 : 0.5
-          }
+        // Evitar que click adentro cierre
+        MouseArea {
+          anchors.fill: parent
+          acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
+          onPressed: (e) => e.accepted = true
+        }
 
-          RowLayout {
-            anchors.fill: parent
-            anchors.margins: 6
-            spacing: 8
-            visible: !row.modelData.isSeparator
+        Column {
+          id: col
+          x: root.pad
+          y: root.pad
+          width: bg.width - root.pad * 2
+          spacing: 2
 
-            // Indicador checkbox/radio (mínimo)
-            Text {
-              text: row.modelData.buttonType !== 0
-                    ? (row.modelData.checkState === Qt.Checked ? "●" : "○")
-                    : ""
-              color: "#cfcfcf"
-              Layout.preferredWidth: 16
-              horizontalAlignment: Text.AlignHCenter
-            }
+          Repeater {
+            model: opener.children
 
-            // Texto
-            Text {
-              text: row.modelData.text
-              color: "#e5e5e5"
-              elide: Text.ElideRight
-              Layout.fillWidth: true
-            }
+            delegate: Item {
+              id: row
+              required property QsMenuEntry modelData
 
-            // Flecha submenu
-            Text {
-              text: row.modelData.hasChildren ? "›" : ""
-              color: "#9a9a9a"
-              Layout.preferredWidth: 14
-              horizontalAlignment: Text.AlignRight
-            }
-          }
+              width: col.width
+              implicitHeight: modelData.isSeparator ? 10 : root.rowHeight
 
-          MouseArea {
-            id: ma
-            anchors.fill: parent
-            hoverEnabled: true
-            enabled: !row.modelData.isSeparator && row.modelData.enabled
-
-            onClicked: {
-              if (row.modelData.hasChildren) {
-                // MVP: por ahora no abrimos submenú (lo hacemos en el siguiente paso)
-                // podés loguear para ver cuáles lo requieren:
-                console.log("[tray menu] submenu:", row.modelData.text)
-                return
+              Rectangle {
+                visible: row.modelData.isSeparator
+                x: 6
+                width: row.width - 12
+                height: 1
+                y: 4
+                color: "#2a2a2a"
               }
 
-              // Ejecutar acción del menú
-              row.modelData.triggered()   // signal invocable en QML :contentReference[oaicite:2]{index=2}
-              popup.menuHandle = null
+              Rectangle {
+                id: itemBg
+                anchors.fill: parent
+                visible: !row.modelData.isSeparator
+                radius: 8
+                color: ma.containsMouse ? "#1f1f1f" : "transparent"
+                opacity: row.modelData.enabled ? 1 : 0.45
+              }
+
+              RowLayout {
+                anchors.fill: parent
+                anchors.margins: 6
+                spacing: 8
+                visible: !row.modelData.isSeparator
+
+                Text {
+                  text: row.modelData.buttonType !== 0
+                        ? (row.modelData.checkState === Qt.Checked ? "●" : "○")
+                        : ""
+                  color: "#cfcfcf"
+                  Layout.preferredWidth: 16
+                  horizontalAlignment: Text.AlignHCenter
+                }
+
+                Text {
+                  text: row.modelData.text
+                  color: "#e5e5e5"
+                  elide: Text.ElideRight
+                  Layout.fillWidth: true
+                }
+
+                Text {
+                  text: row.modelData.hasChildren ? "›" : ""
+                  color: "#9a9a9a"
+                  Layout.preferredWidth: 14
+                  horizontalAlignment: Text.AlignRight
+                }
+              }
+
+              MouseArea {
+                id: ma
+                anchors.fill: parent
+                hoverEnabled: true
+                enabled: !row.modelData.isSeparator && row.modelData.enabled
+
+                onClicked: {
+                  if (row.modelData.hasChildren) {
+                    console.log("[tray menu] submenu:", row.modelData.text)
+                    return
+                  }
+                  row.modelData.triggered()
+                  root.closeMenu()
+                }
+              }
             }
           }
         }
       }
     }
-  }
-
-  // Cerrar con Escape o click afuera (simple)
-  Keys.onPressed: (e) => {
-    if (e.key === Qt.Key_Escape) {
-      popup.menuHandle = null
-      e.accepted = true
-    }
-  }
-
-  MouseArea {
-    // click afuera: como PopupWindow no tiene overlay, usamos un truco:
-    // si el popup pierde focus por click, normalmente se cierra en algunos setups,
-    // pero para asegurar, podés cerrar con right click de nuevo desde el tray.
-    anchors.fill: parent
-    acceptedButtons: Qt.NoButton
   }
 }

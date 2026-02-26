@@ -3,6 +3,8 @@ import QtQuick
 
 PopupWindow {
   id: drawer
+  color: "transparent"
+
 
   // Control externo
   required property PanelWindow anchorWindow

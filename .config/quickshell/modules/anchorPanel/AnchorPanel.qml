@@ -1,5 +1,6 @@
 import Quickshell
 import QtQuick
+import qs.services
 import "."
 
 Scope {
@@ -17,12 +18,11 @@ Scope {
 
       Rectangle { anchors.fill: parent; color: "#FFFFFF"; opacity: 0.9 }
 
-      // true = dashboard abierto
+      // ===== Dashboard (solo centro) =====
       property bool dashboardOpen: false
       property bool hoverDashboardHandle: false
 
       function refreshDashboardOpen() {
-        // abierto mientras hover handle o hover drawer
         dashboardOpen = hoverDashboardHandle || centerDrawer.hovered
       }
 
@@ -38,43 +38,30 @@ Scope {
       Row {
         anchors.fill: parent
 
-        // 1) Hotspot notifs (esquina sup izq)
+        // Left third: Notifs
         MouseArea {
-          width: 24
+          width: parent.width / 3
           height: parent.height
           hoverEnabled: true
-          onEntered: {
-            Visibility.notifsHotspotHovered = true
-            Visibility.refreshNotifsHoverHold()
-          }
-          onExited: {
-            Visibility.notifsHotspotHovered = false
-            Visibility.refreshNotifsHoverHold()
-          }
-          onClicked: {
-            // click pin/unpin
-            Visibility.toggleNotifsPinned()
-          }
+          onEntered: { Visibility.notifsHotspotHovered = true; Visibility.refreshNotifsHoverHold() }
+          onExited:  { Visibility.notifsHotspotHovered = false; Visibility.refreshNotifsHoverHold() }
+          onClicked: Visibility.toggleNotifsPinned()
         }
 
-        // 2) Área central (dashboard)
+        // Center third: Dashboard hover
         MouseArea {
-          width: parent.width - 24
+          width: parent.width / 3
           height: parent.height
           hoverEnabled: true
-
-          onEntered: {
-            topEdge.hoverDashboardHandle = true
-            closeTimer.stop()
-            topEdge.refreshDashboardOpen()
-          }
-          onExited: {
-            topEdge.hoverDashboardHandle = false
-            topEdge.scheduleRefresh()
-          }
+          onEntered: { topEdge.hoverDashboardHandle = true; closeTimer.stop(); topEdge.refreshDashboardOpen() }
+          onExited:  { topEdge.hoverDashboardHandle = false; topEdge.scheduleRefresh() }
         }
+
+        // Right third: vacío
+        Item { width: parent.width / 3; height: parent.height }
       }
 
+      // ===== Drawer centro =====
       Drawer {
         id: centerDrawer
         anchorWindow: topEdge

@@ -13,25 +13,32 @@ Scope {
 
     delegate: Component {
       Item {
-        // --------- 1) TOP ANCHOR WINDOW (para drawers) ----------
+        id: root
+        required property var modelData  // ✅ modelData llega acá (root del delegate)
+
+        // --------- TOP STRIPE HOST (5px) ----------
         PanelWindow {
           id: topHost
-          required property var modelData
-          screen: modelData
+          screen: root.modelData
 
           anchors { top: true; left: true; right: true }
-          implicitHeight: 4          // finito: solo anchor
-          exclusiveZone: 0           // no reserva espacio
+          implicitHeight: 5
+          exclusiveZone: 0
           aboveWindows: true
           color: "transparent"
 
-          // Drawers DIRECTOS (como ya te funciona)
+          DrawersUI.TopStripe {
+            anchors.fill: parent
+            stripeHeight: 5
+            hitHeight: 14
+          }
+
           DrawersUI.Drawer {
             id: notifsDrawer
             anchorWindow: topHost
             open: Visibility.notifsOpen
-            width: 360
-            height: 520
+            implicitWidth: 360      // ✅ antes width
+            implicitHeight: 520     // ✅ antes height
             anchorX: 12
             anchorY: topHost.height
 
@@ -47,9 +54,9 @@ Scope {
             id: dashDrawer
             anchorWindow: topHost
             open: Visibility.dashOpen
-            width: 520
-            height: 320
-            anchorX: topHost.width / 2 - width / 2
+            implicitWidth: 520      // ✅
+            implicitHeight: 320     // ✅
+            anchorX: topHost.width / 2 - implicitWidth / 2
             anchorY: topHost.height
 
             onHoveredChanged: {
@@ -70,29 +77,26 @@ Scope {
           }
         }
 
-        // --------- 2) RIGHT BAR WINDOW (restaurada) ----------
+        // --------- RIGHT BAR HOST (vertical) ----------
         PanelWindow {
           id: bar
-          required property var modelData
-          screen: modelData
+          screen: root.modelData
 
           anchors { top: true; right: true; bottom: true }
-
           implicitWidth: 40
-          exclusiveZone: implicitWidth  // reserva espacio a la derecha
+          exclusiveZone: implicitWidth
           aboveWindows: true
           color: "transparent"
 
-          // Fondo (si querés, podés moverlo al content)
           Rectangle {
             anchors.fill: parent
             color: Colours.palette.m3surfaceContainer
           }
 
-          // Contenido original (embebible)
+          // ✅ importante: parentWindow ahora siempre existe y es correcto
           BarUI.BarContent {
             anchors.fill: parent
-            parentWindow: rightBar
+            parentWindow: bar
           }
         }
       }

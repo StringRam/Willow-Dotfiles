@@ -36,7 +36,7 @@ ColumnLayout {
   Text {
     text: "⌘"
     color: "#e5e5e5"
-    font.pixelSize: 18
+    font.pixelSize: 35
     horizontalAlignment: Text.AlignHCenter
     width: parent.width
 

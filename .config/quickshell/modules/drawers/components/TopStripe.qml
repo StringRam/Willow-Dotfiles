@@ -26,7 +26,7 @@ Item {
 
     // Elegante/subtil (podés cambiar a m3primary si querés)
     color: Colours.palette.m3outlineVariant
-    opacity: 0.9
+    opacity: 0.98
   }
 
   // Hitbox por encima (NO cambia apariencia)

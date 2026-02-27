@@ -25,8 +25,7 @@ Item {
     height: root.stripeHeight
 
     // Elegante/subtil (podés cambiar a m3primary si querés)
-    color: Colours.palette.m3outlineVariant
-    opacity: 0.98
+    color: Colours.palette.m3surfaceContainer
   }
 
   // Hitbox por encima (NO cambia apariencia)

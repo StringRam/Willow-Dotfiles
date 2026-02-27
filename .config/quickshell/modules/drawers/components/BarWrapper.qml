@@ -8,13 +8,6 @@ Item {
   // Le pasamos el Bar como componente (clean)
   required property Item bar
 
-  // Fondo de barra (si tu Bar ya dibuja su fondo, podés quitar esto)
-  Rectangle {
-    anchors.fill: parent
-    color: Colours.palette.m3surfaceContainer
-    visible: true
-  }
-
   // Insertamos el Bar “tal cual”
   Item {
     id: barHost

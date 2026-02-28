@@ -1,16 +1,14 @@
 pragma ComponentBehavior: Bound
 
 import Quickshell
-import Quickshell.Wayland
 import QtQuick
-import QtQuick.Layouts
 
-import qs.modules.drawers.components as DrawersUI
 import qs.modules.bar as BarUI
 import qs.modules.notifs.components as NotifsUI
 import qs.modules.dashboard.components as DashUI
 import qs.modules.launcher as LauncherUI
 import qs.services
+import qs.modules.drawers.components as DrawersUI
 
 Scope {
   LauncherUI.Launcher {}
@@ -23,170 +21,57 @@ Scope {
         id: root
         required property var modelData
 
-        // ---------- FULLSCREEN HOST (pero click-through salvo paneles) ----------
-        PanelWindow {
+        // ✅ Host fullscreen: TODO lo que se ve (dash/notifs) va adentro
+        DrawersUI.DrawerHost {
           id: host
-          screen: root.modelData
+          screenModel: root.modelData
+          stripeGap: 9
 
-          anchors { top: true; bottom: true; left: true; right: true }
-          exclusiveZone: 0
-          aboveWindows: true
-          color: "transparent"
-
-          // --- Stripe (hotspot) ---
-          Item {
-            id: stripeHit
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: 14
-
-            DrawersUI.TopStripe {
-              anchors.fill: parent
-              stripeHeight: 5
-              hitHeight: 14
-            }
-          }
-
-          // ✅ Ajuste real de anclaje
-          property int stripeGap: 9
-          readonly property int drawerTop: stripeHit.height + stripeGap
-
-          // Fondo detrás de wrappers (no intercepta clicks: lo controla mask)
-          DrawersUI.Backgrounds {
-            id: backgrounds
-            anchors.fill: parent
-            dashWrapper: dashWrapper
-            notifsWrapper: notifsWrapper
-          }
-
-          // ---------- NOTIFS WRAPPER (shell-main style: tamaño -> 0) ----------
-          Item {
+          // Panels (children del host)
+          DrawersUI.DropPanel {
             id: notifsWrapper
             x: 12
+            targetW: 360
+            targetH: 520
+            t: Visibility.notifsOpen ? 1 : 0
+            topY: host.drawerTop
 
-            readonly property int targetW: 360
-            readonly property int targetH: 520
-
-            property real t: Visibility.notifsOpen ? 1 : 0
-
-            width: targetW
-            height: Math.round(targetH * t)
-
-            property int drop: 18
-            y: host.drawerTop + (1 - t) * (-drop)
-
-            visible: height > 0
-            opacity: t
-
-            Behavior on height { NumberAnimation { duration: 210; easing.type: Easing.OutCubic } }
-            Behavior on y { NumberAnimation { duration: 190; easing.type: Easing.OutCubic } }
-            Behavior on opacity { NumberAnimation { duration: 140 } }
-
-            clip: true
             NotifsUI.NotifContent { anchors.fill: parent }
           }
 
-          // ---------- DASHBOARD WRAPPER (shell-main style: tamaño -> 0) ----------
-          Item {
+          DrawersUI.DropPanel {
             id: dashWrapper
-            readonly property int targetW: 520
-            readonly property int targetH: 320
-
-            property real t: Visibility.dashOpen ? 1 : 0
-
-            width: targetW
-            height: Math.round(targetH * t)
-
+            targetW: 520
+            targetH: 320
+            t: Visibility.dashOpen ? 1 : 0
+            topY: host.drawerTop
             x: (host.width - width) / 2
 
-            property int drop: 18
-            y: host.drawerTop + (1 - t) * (-drop)
-
-            visible: height > 0
-            opacity: t
-
-            Behavior on height { NumberAnimation { duration: 210; easing.type: Easing.OutCubic } }
-            Behavior on y { NumberAnimation { duration: 190; easing.type: Easing.OutCubic } }
-            Behavior on opacity { NumberAnimation { duration: 140 } }
-
+            // Si tu DashboardContent requiere `state`, reinsertalo acá como antes:
             PersistentProperties {
               id: dashState
               property int currentTab: 0
               reloadableId: "willowDashState"
             }
 
-            clip: true
             DashUI.DashboardContent {
               anchors.fill: parent
               state: dashState
             }
           }
 
-          // ---------- HITBOXES (deben abarcar el background redondeado) ----------
-          Item {
-            id: notifsHitbox
-            x: notifsWrapper.x - backgrounds.rounding
-            y: notifsWrapper.y - backgrounds.rounding
-            width: notifsWrapper.width + backgrounds.rounding * 2
-            height: notifsWrapper.height + backgrounds.rounding * 2
-            visible: false
-          }
+          // Hitboxes (children del host, usan rounding real del background)
+          DrawersUI.Hitbox { id: notifsHitbox; wrapper: notifsWrapper; rounding: host.rounding }
+          DrawersUI.Hitbox { id: dashHitbox; wrapper: dashWrapper; rounding: host.rounding }
 
-          Item {
-            id: dashHitbox
-            x: dashWrapper.x - backgrounds.rounding
-            y: dashWrapper.y - backgrounds.rounding
-            width: dashWrapper.width + backgrounds.rounding * 2
-            height: dashWrapper.height + backgrounds.rounding * 2
-            visible: false
-          }
-
-          // ✅ CLAVE: el window NO bloquea clicks excepto donde diga el mask
-          mask: Region {
-            intersection: Intersection.Combine
-            regions: [
-              Region { item: stripeHit },
-              Region { item: (dashWrapper.height > 0 ? dashHitbox : null) },
-              Region { item: (notifsWrapper.height > 0 ? notifsHitbox : null) }
-            ]
-          }
-
-          // ---------- HOVER DETECTION (sobre hitboxes, no sobre wrapper) ----------
-          MouseArea {
-            anchors.fill: notifsHitbox
-            hoverEnabled: true
-            acceptedButtons: Qt.NoButton
-            enabled: notifsWrapper.height > 0
-
-            onEntered: {
-              Visibility.notifsPanelHovered = true
-              Visibility.updateNotifsHover()
-            }
-            onExited: {
-              Visibility.notifsPanelHovered = false
-              Visibility.updateNotifsHover()
-            }
-          }
-
-          MouseArea {
-            anchors.fill: dashHitbox
-            hoverEnabled: true
-            acceptedButtons: Qt.NoButton
-            enabled: dashWrapper.height > 0
-
-            onEntered: {
-              Visibility.dashPanelHovered = true
-              Visibility.updateDashHover()
-            }
-            onExited: {
-              Visibility.dashPanelHovered = false
-              Visibility.updateDashHover()
-            }
-          }
+          // Pasar refs al host (mask + hover)
+          notifsWrapper: notifsWrapper
+          dashWrapper: dashWrapper
+          notifsHitbox: notifsHitbox
+          dashHitbox: dashHitbox
         }
 
-        // ---------- RIGHT BAR ----------
+        // Right bar como antes
         PanelWindow {
           id: bar
           screen: root.modelData

@@ -12,7 +12,7 @@ Shape {
   required property Item notifsWrapper
 
   property real rounding: 18
-  property color panelColor: Colours.palette.m3surfaceContainerHigh
+  property color panelColor: Colours.palette.m3surface
 
   DrawersUI.PanelBackground {
     wrapper: root.dashWrapper

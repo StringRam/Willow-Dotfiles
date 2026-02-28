@@ -52,11 +52,9 @@ Scope {
           property int stripeGap: 9
           readonly property int drawerTop: stripeHit.height + stripeGap
 
-          // ✅ rounding debe coincidir con Backgrounds.qml
-          property int panelRounding: 18
-
           // Fondo detrás de wrappers (no intercepta clicks: lo controla mask)
           DrawersUI.Backgrounds {
+            id: backgrounds
             anchors.fill: parent
             dashWrapper: dashWrapper
             notifsWrapper: notifsWrapper
@@ -128,19 +126,19 @@ Scope {
           // ---------- HITBOXES (deben abarcar el background redondeado) ----------
           Item {
             id: notifsHitbox
-            x: notifsWrapper.x - host.panelRounding
-            y: notifsWrapper.y - host.panelRounding
-            width: notifsWrapper.width + host.panelRounding * 2
-            height: notifsWrapper.height + host.panelRounding * 2
+            x: notifsWrapper.x - backgrounds.rounding
+            y: notifsWrapper.y - backgrounds.rounding
+            width: notifsWrapper.width + backgrounds.rounding * 2
+            height: notifsWrapper.height + backgrounds.rounding * 2
             visible: false
           }
 
           Item {
             id: dashHitbox
-            x: dashWrapper.x - host.panelRounding
-            y: dashWrapper.y - host.panelRounding
-            width: dashWrapper.width + host.panelRounding * 2
-            height: dashWrapper.height + host.panelRounding * 2
+            x: dashWrapper.x - backgrounds.rounding
+            y: dashWrapper.y - backgrounds.rounding
+            width: dashWrapper.width + backgrounds.rounding * 2
+            height: dashWrapper.height + backgrounds.rounding * 2
             visible: false
           }
 

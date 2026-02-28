@@ -5,9 +5,13 @@ import qs.modules.drawers.components as DrawersUI
 import qs.modules.bar as BarUI
 import qs.modules.notifs.components as NotifsUI
 import qs.modules.dashboard.components as DashUI
+import qs.modules.launcher as LauncherUI
 import qs.services
 
 Scope {
+  // ✅ Host del launcher (OverlayWindow) — vive junto al resto de “ventanas” del shell
+  LauncherUI.Launcher {}
+
   Variants {
     model: Quickshell.screens
 
@@ -37,8 +41,8 @@ Scope {
             id: notifsDrawer
             anchorWindow: topHost
             open: Visibility.notifsOpen
-            implicitWidth: 360      // ✅ antes width
-            implicitHeight: 520     // ✅ antes height
+            implicitWidth: 360
+            implicitHeight: 520
             anchorX: 12
             anchorY: topHost.height
 
@@ -54,8 +58,8 @@ Scope {
             id: dashDrawer
             anchorWindow: topHost
             open: Visibility.dashOpen
-            implicitWidth: 520      // ✅
-            implicitHeight: 320     // ✅
+            implicitWidth: 520
+            implicitHeight: 320
             anchorX: topHost.width / 2 - implicitWidth / 2
             anchorY: topHost.height
 
@@ -93,7 +97,6 @@ Scope {
             color: Colours.palette.m3surfaceContainer
           }
 
-          // ✅ importante: parentWindow ahora siempre existe y es correcto
           BarUI.BarContent {
             anchors.fill: parent
             parentWindow: bar

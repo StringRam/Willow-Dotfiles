@@ -5,7 +5,20 @@ import QtQuick
 Singleton {
   id: root
 
+  // =======================
+  // LAUNCHER
+  // =======================
   property bool launcherOpen: false
+
+  // =======================
+  // SIDEPANEL (drawer desde la barra lateral)
+  // =======================
+  property bool sidepanelOpen: false
+
+  // =======================
+  // SESSION MENU (logout/reboot/etc)
+  // =======================
+  property bool sessionOpen: false
 
   // =======================
   // NOTIFS (hover + pin)
@@ -29,27 +42,23 @@ Singleton {
   }
 
   function updateNotifsHover() {
-    // Si está pinned, siempre abierto
     if (notifsPinned) {
       notifsHoverHold = true
       notifsCloseTimer.stop()
       return
     }
 
-    // Si hay hover en hotspot o panel, abrir/hold inmediato
     if (notifsHotspotHovered || notifsPanelHovered) {
       notifsHoverHold = true
       notifsCloseTimer.stop()
       return
     }
 
-    // Si no hay hover, cerrar con delay (y re-check)
     notifsCloseTimer.restart()
   }
 
   function toggleNotifsPinned() {
     notifsPinned = !notifsPinned
-    // al pin/unpin, reevaluar estado
     updateNotifsHover()
   }
 
@@ -116,6 +125,8 @@ Singleton {
   // =======================
   function closeAll() {
     launcherOpen = false
+    sidepanelOpen = false
+    sessionOpen = false
     closeNotifs()
     closeDash()
   }
@@ -124,5 +135,17 @@ Singleton {
     const next = !launcherOpen
     closeAll()
     launcherOpen = next
+  }
+
+  function toggleSidepanel() {
+    const next = !sidepanelOpen
+    closeAll()
+    sidepanelOpen = next
+  }
+
+  function toggleSession() {
+    const next = !sessionOpen
+    closeAll()
+    sessionOpen = next
   }
 }

@@ -6,8 +6,15 @@ import Quickshell
 ColumnLayout {
   id: root
   spacing: 10
-  anchors.margins: 6
   anchors.fill: parent
+
+  // padding lateral base
+  anchors.leftMargin: 5
+  anchors.rightMargin: 5
+
+  // ✅ padding extra arriba/abajo
+  anchors.topMargin: 12
+  anchors.bottomMargin: 12
 
   // Para SystemTray (tu componente lo requiere)
   required property PanelWindow parentWindow
@@ -31,18 +38,5 @@ ColumnLayout {
 
   BatteryIndicator {
     Layout.alignment: Qt.AlignHCenter
-  }
-
-  Text {
-    text: "⌘"
-    color: "#e5e5e5"
-    font.pixelSize: 35
-    horizontalAlignment: Text.AlignHCenter
-    width: parent.width
-
-    MouseArea {
-      anchors.fill: parent
-      onClicked: Visibility.toggleLauncher()
-    }
   }
 }

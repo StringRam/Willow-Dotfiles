@@ -1,8 +1,11 @@
 import qs.components
 import qs.config
 import qs.services
+import Quickshell
 import QtQuick
 import QtQuick.Layouts
+
+import "../../../components/controls" as Controls
 
 GridLayout {
   id: root
@@ -78,7 +81,7 @@ GridLayout {
     }
   }
 
-  // Resources (abajo derecha)
+  // ✅ Resources -> Session actions (abajo derecha)
   StyledRect {
     Layout.row: 1
     Layout.column: 4
@@ -88,9 +91,56 @@ GridLayout {
     radius: Appearance.rounding.normal
     color: Colours.palette.m3surfaceContainer
 
-    StyledText {
-      anchors.centerIn: parent
-      text: "Resources"
+    ColumnLayout {
+      anchors.fill: parent
+      anchors.margins: Appearance.padding.normal
+      spacing: Appearance.spacing.small
+
+      StyledText {
+        Layout.alignment: Qt.AlignHCenter
+        text: "Session"
+      }
+
+      // 2x2 grid de botones
+      GridLayout {
+        Layout.fillWidth: true
+        Layout.fillHeight: true
+        columns: 2
+        rowSpacing: Appearance.spacing.small
+        columnSpacing: Appearance.spacing.small
+
+        // LOCK
+        Controls.IconButton {
+          Layout.alignment: Qt.AlignHCenter
+          type: Controls.IconButton.Tonal
+          icon: "lock"
+          onClicked: Quickshell.execDetached(["sh", "-c", "hyprlock"])
+        }
+
+        // LOGOUT
+        Controls.IconButton {
+          Layout.alignment: Qt.AlignHCenter
+          type: Controls.IconButton.Tonal
+          icon: "logout"
+          onClicked: Quickshell.execDetached(["sh", "-c", "hyprctl dispatch exit"])
+        }
+
+        // REBOOT
+        Controls.IconButton {
+          Layout.alignment: Qt.AlignHCenter
+          type: Controls.IconButton.Tonal
+          icon: "restart_alt"
+          onClicked: Quickshell.execDetached(["sh", "-c", "systemctl reboot"])
+        }
+
+        // POWER OFF
+        Controls.IconButton {
+          Layout.alignment: Qt.AlignHCenter
+          type: Controls.IconButton.Tonal
+          icon: "power_settings_new"
+          onClicked: Quickshell.execDetached(["sh", "-c", "systemctl poweroff"])
+        }
+      }
     }
   }
 

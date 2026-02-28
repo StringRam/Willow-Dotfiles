@@ -1,91 +1,99 @@
 pragma ComponentBehavior: Bound
 
-import qs.components
-import qs.config
-import qs.services
-import Quickshell.Widgets
 import QtQuick
-import QtQuick.Controls
+import qs.components
+import qs.services
 
 Item {
   id: root
 
-  required property real nonAnimWidth
   required property var state
-  readonly property alias count: bar.count
+  // lo dejamos aunque no lo usemos, para no romper imports existentes
+  required property real nonAnimWidth
 
-  implicitHeight: bar.implicitHeight + indicator.implicitHeight + indicator.anchors.topMargin + separator.implicitHeight
+  property int count: 4
+  readonly property real cellWidth: width / count
+  readonly property int currentIndex: root.state.currentTab ?? 0
 
-  TabBar {
-    id: bar
+  implicitHeight: 34 + 5 + 3 + 1  // tabs + gap + indicator + separator
+
+  // ---------- Tabs row ----------
+  Row {
+    id: row
     anchors.left: parent.left
     anchors.right: parent.right
     anchors.top: parent.top
+    height: 34
+    spacing: 0
 
-    currentIndex: root.state.currentTab ?? 0
-    background: null
+    function labelFor(i) {
+      switch (i) {
+      case 0: return "Dashboard"
+      case 1: return "Media"
+      case 2: return "Performance"
+      case 3: return "Weather"
+      default: return "Tab"
+      }
+    }
 
-    onCurrentIndexChanged: root.state.currentTab = currentIndex
+    Repeater {
+      model: root.count
 
-    TabButton {
-      background: null
-      contentItem: StyledText { text: "Dashboard" }
-      onClicked: root.state.currentTab = 0
-    }
-    TabButton {
-      background: null
-      contentItem: StyledText { text: "Media" }
-      onClicked: root.state.currentTab = 1
-    }
-    TabButton {
-      background: null
-      contentItem: StyledText { text: "Performance" }
-      onClicked: root.state.currentTab = 2
-    }
-    TabButton {
-      background: null
-      contentItem: StyledText { text: "Weather" }
-      onClicked: root.state.currentTab = 3
+      delegate: Item {
+        id: cell
+        required property int index
+
+        width: root.cellWidth
+        height: row.height
+
+        // opcional: feedback visual (hover/active)
+        StyledRect {
+          anchors.fill: parent
+          radius: Appearance.rounding.full
+          color: (root.currentIndex === index)
+                   ? Qt.alpha(Colours.palette.m3primary, 0.12)
+                   : "transparent"
+        }
+
+        StyledText {
+          anchors.centerIn: parent
+          text: row.labelFor(index)
+        }
+
+        MouseArea {
+          anchors.fill: parent
+          onClicked: root.state.currentTab = index
+        }
+      }
     }
   }
 
+  // ---------- Indicator ----------
   Item {
     id: indicator
-    anchors.top: bar.bottom
+    anchors.top: row.bottom
     anchors.topMargin: 5
-
-    implicitWidth: bar.currentItem?.implicitWidth ?? 0
-    implicitHeight: 3
-
-    x: {
-      const tab = bar.currentItem;
-      if (!tab) return 0;
-      const width = (root.nonAnimWidth - bar.spacing * (bar.count - 1)) / bar.count;
-      return width * tab.TabBar.index + (width - tab.implicitWidth) / 2;
-    }
-
+    height: 3
+    width: root.cellWidth
+    x: root.cellWidth * root.currentIndex
     clip: true
 
     StyledRect {
-      anchors.top: parent.top
-      anchors.left: parent.left
-      anchors.right: parent.right
-      implicitHeight: parent.implicitHeight * 2
+      anchors.fill: parent
       color: Colours.palette.m3primary
       radius: Appearance.rounding.full
     }
 
     Behavior on x { Anim {} }
-    Behavior on implicitWidth { Anim {} }
+    Behavior on width { Anim {} }
   }
 
+  // ---------- Separator ----------
   StyledRect {
-    id: separator
     anchors.top: indicator.bottom
     anchors.left: parent.left
     anchors.right: parent.right
-
-    implicitHeight: 1
+    height: 1
     color: Colours.palette.m3outlineVariant
   }
 }

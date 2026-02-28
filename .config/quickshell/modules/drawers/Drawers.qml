@@ -41,13 +41,14 @@ Scope {
 
           DrawersUI.DropPanel {
             id: dashWrapper
-            targetW: 520
-            targetH: 320
             t: Visibility.dashOpen ? 1 : 0
             topY: host.drawerTop
             x: (host.width - width) / 2
 
-            // Si tu DashboardContent requiere `state`, reinsertalo acá como antes:
+            // 👇 tamaño dinámico según pestaña actual
+            targetW: Math.round(dashContent.implicitWidth)
+            targetH: Math.round(dashContent.implicitHeight)
+
             PersistentProperties {
               id: dashState
               property int currentTab: 0
@@ -55,6 +56,7 @@ Scope {
             }
 
             DashUI.DashboardContent {
+              id: dashContent
               anchors.fill: parent
               state: dashState
             }

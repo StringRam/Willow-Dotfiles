@@ -1,6 +1,10 @@
 pragma ComponentBehavior: Bound
+
 import Quickshell
+import Quickshell.Wayland
 import QtQuick
+import QtQuick.Layouts
+
 import qs.modules.drawers.components as DrawersUI
 import qs.modules.bar as BarUI
 import qs.modules.notifs.components as NotifsUI
@@ -9,7 +13,6 @@ import qs.modules.launcher as LauncherUI
 import qs.services
 
 Scope {
-  // ✅ Host del launcher (OverlayWindow) — vive junto al resto de “ventanas” del shell
   LauncherUI.Launcher {}
 
   Variants {
@@ -18,55 +21,96 @@ Scope {
     delegate: Component {
       Item {
         id: root
-        required property var modelData  // ✅ modelData llega acá (root del delegate)
+        required property var modelData
 
-        // --------- TOP STRIPE HOST (5px) ----------
+        // ---------- FULLSCREEN HOST (pero click-through salvo paneles) ----------
         PanelWindow {
-          id: topHost
+          id: host
           screen: root.modelData
 
-          anchors { top: true; left: true; right: true }
-          implicitHeight: 5
+          anchors { top: true; bottom: true; left: true; right: true }
           exclusiveZone: 0
           aboveWindows: true
           color: "transparent"
 
-          DrawersUI.TopStripe {
-            anchors.fill: parent
-            stripeHeight: 5
-            hitHeight: 14
+          // --- Stripe (hotspot) ---
+          Item {
+            id: stripeHit
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: 14
+
+            DrawersUI.TopStripe {
+              anchors.fill: parent
+              stripeHeight: 5
+              hitHeight: 14
+            }
           }
 
-          DrawersUI.Drawer {
-            id: notifsDrawer
-            anchorWindow: topHost
-            open: Visibility.notifsOpen
-            implicitWidth: 360
-            implicitHeight: 520
-            anchorX: 12
-            anchorY: topHost.height
+          // ✅ Ajuste real de anclaje
+          property int stripeGap: 9
+          readonly property int drawerTop: stripeHit.height + stripeGap
 
-            onHoveredChanged: {
-              Visibility.notifsPanelHovered = hovered
-              Visibility.updateNotifsHover()
-            }
+          // ✅ rounding debe coincidir con Backgrounds.qml
+          property int panelRounding: 18
 
+          // Fondo detrás de wrappers (no intercepta clicks: lo controla mask)
+          DrawersUI.Backgrounds {
+            anchors.fill: parent
+            dashWrapper: dashWrapper
+            notifsWrapper: notifsWrapper
+          }
+
+          // ---------- NOTIFS WRAPPER (shell-main style: tamaño -> 0) ----------
+          Item {
+            id: notifsWrapper
+            x: 12
+
+            readonly property int targetW: 360
+            readonly property int targetH: 520
+
+            property real t: Visibility.notifsOpen ? 1 : 0
+
+            width: targetW
+            height: Math.round(targetH * t)
+
+            property int drop: 18
+            y: host.drawerTop + (1 - t) * (-drop)
+
+            visible: height > 0
+            opacity: t
+
+            Behavior on height { NumberAnimation { duration: 210; easing.type: Easing.OutCubic } }
+            Behavior on y { NumberAnimation { duration: 190; easing.type: Easing.OutCubic } }
+            Behavior on opacity { NumberAnimation { duration: 140 } }
+
+            clip: true
             NotifsUI.NotifContent { anchors.fill: parent }
           }
 
-          DrawersUI.Drawer {
-            id: dashDrawer
-            anchorWindow: topHost
-            open: Visibility.dashOpen
-            implicitWidth: 520
-            implicitHeight: 320
-            anchorX: topHost.width / 2 - implicitWidth / 2
-            anchorY: topHost.height
+          // ---------- DASHBOARD WRAPPER (shell-main style: tamaño -> 0) ----------
+          Item {
+            id: dashWrapper
+            readonly property int targetW: 520
+            readonly property int targetH: 320
 
-            onHoveredChanged: {
-              Visibility.dashPanelHovered = hovered
-              Visibility.updateDashHover()
-            }
+            property real t: Visibility.dashOpen ? 1 : 0
+
+            width: targetW
+            height: Math.round(targetH * t)
+
+            x: (host.width - width) / 2
+
+            property int drop: 18
+            y: host.drawerTop + (1 - t) * (-drop)
+
+            visible: height > 0
+            opacity: t
+
+            Behavior on height { NumberAnimation { duration: 210; easing.type: Easing.OutCubic } }
+            Behavior on y { NumberAnimation { duration: 190; easing.type: Easing.OutCubic } }
+            Behavior on opacity { NumberAnimation { duration: 140 } }
 
             PersistentProperties {
               id: dashState
@@ -74,14 +118,77 @@ Scope {
               reloadableId: "willowDashState"
             }
 
+            clip: true
             DashUI.DashboardContent {
               anchors.fill: parent
               state: dashState
             }
           }
+
+          // ---------- HITBOXES (deben abarcar el background redondeado) ----------
+          Item {
+            id: notifsHitbox
+            x: notifsWrapper.x - host.panelRounding
+            y: notifsWrapper.y - host.panelRounding
+            width: notifsWrapper.width + host.panelRounding * 2
+            height: notifsWrapper.height + host.panelRounding * 2
+            visible: false
+          }
+
+          Item {
+            id: dashHitbox
+            x: dashWrapper.x - host.panelRounding
+            y: dashWrapper.y - host.panelRounding
+            width: dashWrapper.width + host.panelRounding * 2
+            height: dashWrapper.height + host.panelRounding * 2
+            visible: false
+          }
+
+          // ✅ CLAVE: el window NO bloquea clicks excepto donde diga el mask
+          mask: Region {
+            intersection: Intersection.Combine
+            regions: [
+              Region { item: stripeHit },
+              Region { item: (dashWrapper.height > 0 ? dashHitbox : null) },
+              Region { item: (notifsWrapper.height > 0 ? notifsHitbox : null) }
+            ]
+          }
+
+          // ---------- HOVER DETECTION (sobre hitboxes, no sobre wrapper) ----------
+          MouseArea {
+            anchors.fill: notifsHitbox
+            hoverEnabled: true
+            acceptedButtons: Qt.NoButton
+            enabled: notifsWrapper.height > 0
+
+            onEntered: {
+              Visibility.notifsPanelHovered = true
+              Visibility.updateNotifsHover()
+            }
+            onExited: {
+              Visibility.notifsPanelHovered = false
+              Visibility.updateNotifsHover()
+            }
+          }
+
+          MouseArea {
+            anchors.fill: dashHitbox
+            hoverEnabled: true
+            acceptedButtons: Qt.NoButton
+            enabled: dashWrapper.height > 0
+
+            onEntered: {
+              Visibility.dashPanelHovered = true
+              Visibility.updateDashHover()
+            }
+            onExited: {
+              Visibility.dashPanelHovered = false
+              Visibility.updateDashHover()
+            }
+          }
         }
 
-        // --------- RIGHT BAR HOST (vertical) ----------
+        // ---------- RIGHT BAR ----------
         PanelWindow {
           id: bar
           screen: root.modelData
@@ -92,10 +199,7 @@ Scope {
           aboveWindows: true
           color: "transparent"
 
-          Rectangle {
-            anchors.fill: parent
-            color: Colours.palette.m3surfaceContainer
-          }
+          Rectangle { anchors.fill: parent; color: Colours.palette.m3surfaceContainer }
 
           BarUI.BarContent {
             anchors.fill: parent

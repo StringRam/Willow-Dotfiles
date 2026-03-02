@@ -1,18 +1,32 @@
 import QtQuick
 import qs.services
 
-Column {
-  spacing: 0
+Item {
+  id: root
+  implicitWidth: content.implicitWidth
+  implicitHeight: content.implicitHeight
 
-  Text {
-    text: Time.hour
-    color: Colours.palette.m3onSurface
-    verticalAlignment: Text.AlignHCenter
+  Column {
+    id: content
+    spacing: 0
+
+    Text {
+      text: Time.hour
+      color: Colours.palette.m3onSurface
+      horizontalAlignment: Text.AlignHCenter
+    }
+
+    Text {
+      text: Time.minute
+      color: Colours.palette.m3onSurface
+      horizontalAlignment: Text.AlignHCenter
+    }
   }
 
-  Text {
-    text: Time.minute
-    color: Colours.palette.m3onSurface
-    verticalAlignment: Text.AlignHCenter
+  MouseArea {
+    anchors.fill: parent
+    hoverEnabled: true
+    cursorShape: Qt.PointingHandCursor
+    onClicked: Visibility.toggleSidepanel()
   }
 }

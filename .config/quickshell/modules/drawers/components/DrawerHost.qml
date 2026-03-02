@@ -9,10 +9,15 @@ PanelWindow {
   id: host
 
   required property var screenModel
+
   required property Item dashWrapper
   required property Item notifsWrapper
   required property Item dashHitbox
   required property Item notifsHitbox
+
+  // ✅ opcional (sidepanel)
+  property Item sideWrapper: null
+  property Item sideHitbox: null
 
   property int stripeGap: 9
 
@@ -40,16 +45,17 @@ PanelWindow {
 
   readonly property int drawerTop: stripeHit.height + stripeGap
 
-  // ✅ Fondo detrás de todo (NO debe tapar el contenido)
+  // ✅ Fondo detrás de todo
   DrawersUI.Backgrounds {
     id: backgrounds
     z: 0
     anchors.fill: parent
     dashWrapper: host.dashWrapper
     notifsWrapper: host.notifsWrapper
+    sideWrapper: host.sideWrapper
   }
 
-  // ✅ Contenido de los paneles (encima del fondo)
+  // ✅ Contenido por encima del fondo
   Item {
     id: contentRoot
     z: 10
@@ -57,17 +63,18 @@ PanelWindow {
   }
   default property alias content: contentRoot.data
 
-  // ✅ Mask click-through (ok)
+  // ✅ Mask click-through
   mask: Region {
     intersection: Intersection.Combine
     regions: [
       Region { item: stripeHit },
       Region { item: (host.dashWrapper.height > 0 ? host.dashHitbox : null) },
-      Region { item: (host.notifsWrapper.height > 0 ? host.notifsHitbox : null) }
+      Region { item: (host.notifsWrapper.height > 0 ? host.notifsHitbox : null) },
+      Region { item: (host.sideWrapper && host.sideWrapper.width > 0 ? host.sideHitbox : null) }
     ]
   }
 
-  // ✅ Hover sobre hitboxes (por encima del fondo, pero no roba clicks)
+  // Hover sobre hitboxes (dash/notifs)
   MouseArea {
     z: 20
     x: host.notifsHitbox.x
@@ -79,14 +86,8 @@ PanelWindow {
     acceptedButtons: Qt.NoButton
     enabled: host.notifsWrapper.height > 0
 
-    onEntered: {
-      Visibility.notifsPanelHovered = true
-      Visibility.updateNotifsHover()
-    }
-    onExited: {
-      Visibility.notifsPanelHovered = false
-      Visibility.updateNotifsHover()
-    }
+    onEntered: { Visibility.notifsPanelHovered = true; Visibility.updateNotifsHover() }
+    onExited: { Visibility.notifsPanelHovered = false; Visibility.updateNotifsHover() }
   }
 
   MouseArea {
@@ -100,14 +101,8 @@ PanelWindow {
     acceptedButtons: Qt.NoButton
     enabled: host.dashWrapper.height > 0
 
-    onEntered: {
-      Visibility.dashPanelHovered = true
-      Visibility.updateDashHover()
-    }
-    onExited: {
-      Visibility.dashPanelHovered = false
-      Visibility.updateDashHover()
-    }
+    onEntered: { Visibility.dashPanelHovered = true; Visibility.updateDashHover() }
+    onExited: { Visibility.dashPanelHovered = false; Visibility.updateDashHover() }
   }
 
   property alias rounding: backgrounds.rounding

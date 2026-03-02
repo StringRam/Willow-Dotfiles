@@ -7,6 +7,7 @@ import qs.modules.bar as BarUI
 import qs.modules.notifs.components as NotifsUI
 import qs.modules.dashboard.components as DashUI
 import qs.modules.launcher as LauncherUI
+import qs.modules.sidepanel as SideUI
 import qs.services
 import qs.modules.drawers.components as DrawersUI
 
@@ -21,13 +22,12 @@ Scope {
         id: root
         required property var modelData
 
-        // ✅ Host fullscreen: TODO lo que se ve (dash/notifs) va adentro
         DrawersUI.DrawerHost {
           id: host
           screenModel: root.modelData
           stripeGap: 9
 
-          // Panels (children del host)
+          // NOTIFS
           DrawersUI.DropPanel {
             id: notifsWrapper
             x: 12
@@ -39,13 +39,13 @@ Scope {
             NotifsUI.NotifContent { anchors.fill: parent }
           }
 
+          // DASH
           DrawersUI.DropPanel {
             id: dashWrapper
             t: Visibility.dashOpen ? 1 : 0
             topY: host.drawerTop
             x: (host.width - width) / 2
 
-            // 👇 tamaño dinámico según pestaña actual
             targetW: Math.round(dashContent.implicitWidth)
             targetH: Math.round(dashContent.implicitHeight)
 
@@ -62,18 +62,36 @@ Scope {
             }
           }
 
-          // Hitboxes (children del host, usan rounding real del background)
+          // ✅ SIDEPANEL (sale desde la derecha, “tronco”)
+          DrawersUI.SlidePanel {
+            id: sideWrapper
+            t: Visibility.sidepanelOpen ? 1 : 0
+
+            targetW: 360
+            topY: host.drawerTop
+            bottomY: host.height + host.rounding
+
+            rightEdgeX: host.width + 18 //- bar.implicitWidth
+
+            SideUI.SidePanel { anchors.fill: parent; inset: host.rounding}
+          }
+
+          // HITBOXES
           DrawersUI.Hitbox { id: notifsHitbox; wrapper: notifsWrapper; rounding: host.rounding }
           DrawersUI.Hitbox { id: dashHitbox; wrapper: dashWrapper; rounding: host.rounding }
+          DrawersUI.Hitbox { id: sideHitbox; wrapper: sideWrapper; rounding: host.rounding }
 
-          // Pasar refs al host (mask + hover)
+          // refs al host (mask + hover)
           notifsWrapper: notifsWrapper
           dashWrapper: dashWrapper
           notifsHitbox: notifsHitbox
           dashHitbox: dashHitbox
+
+          sideWrapper: sideWrapper
+          sideHitbox: sideHitbox
         }
 
-        // Right bar como antes
+        // Right bar
         PanelWindow {
           id: bar
           screen: root.modelData

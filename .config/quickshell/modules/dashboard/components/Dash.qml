@@ -19,8 +19,8 @@ Item {
     StyledRect {
       Layout.fillWidth: true
       Layout.fillHeight: true
-      Layout.minimumWidth: 420
-      Layout.minimumHeight: 260
+      Layout.minimumWidth: 560
+      Layout.minimumHeight: 220
 
       // ✅ más redondeado (si xlarge no existe, usa una alternativa segura)
       radius: (Appearance.rounding.xlarge !== undefined)

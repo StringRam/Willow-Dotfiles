@@ -10,7 +10,9 @@ Singleton {
   property int received: 0
 
   // Historial (NotifCenter)
-  readonly property var items: server.trackedNotifications
+  // Guardamos nuestras propias refs para poder operar (clear/dismiss) sin pelear
+  // con la estructura interna de trackedNotifications.
+  property var items: []
 
   // Toasts: lista simple
   property var toasts: []
@@ -29,13 +31,20 @@ Singleton {
     toasts = toasts.filter(t => t.key !== key)
   }
 
+  function dropItem(key) {
+    items = items.filter(it => it.key !== key)
+  }
+
   function clearAll() {
-    // si existe dismiss, mejor; sino des-track
+    // dismiss si existe; si no, des-track. Luego limpiamos nuestro modelo.
     for (let i = items.length - 1; i >= 0; i--) {
-      const n = items[i]
+      const it = items[i]
+      const n = it.ref
+      if (!n) continue
       if (n.dismiss) n.dismiss()
       else n.tracked = false
     }
+    items = []
   }
 
   NotificationServer {
@@ -44,6 +53,16 @@ Singleton {
       root.received++
       console.log("[Notifs] got:", n.summary, "|", n.body)
       n.tracked = true
+
+      const it = {
+        key: Date.now() + Math.random(),
+        summary: n.summary ?? "",
+        body: n.body ?? "",
+        ref: n
+      }
+
+      // prepend
+      root.items = [it, ...root.items]
       root.pushToast(n)
     }
   }

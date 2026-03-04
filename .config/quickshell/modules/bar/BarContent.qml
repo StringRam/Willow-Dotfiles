@@ -23,6 +23,11 @@ ColumnLayout {
     Layout.alignment: Qt.AlignHCenter
   }
 
+  // IME indicator (fcitx5)
+  ImeIndicator {
+    Layout.alignment: Qt.AlignHCenter
+  }
+
   Item { Layout.fillHeight: true } // spacer
 
   ClockWidget {

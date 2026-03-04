@@ -81,8 +81,10 @@ Item {
             Button {
               text: "Dismiss"
               onClicked: {
-                if (modelData.dismiss) modelData.dismiss()
-                else modelData.tracked = false
+                const n = modelData.ref
+                if (n && n.dismiss) n.dismiss()
+                else if (n) n.tracked = false
+                Notifs.dropItem(modelData.key)
               }
             }
           }

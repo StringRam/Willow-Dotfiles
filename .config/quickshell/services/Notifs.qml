@@ -9,12 +9,9 @@ Singleton {
   // Debug
   property int received: 0
 
-  // Historial (NotifCenter)
-  // Guardamos nuestras propias refs para poder operar (clear/dismiss) sin pelear
-  // con la estructura interna de trackedNotifications.
   property var items: []
+  property bool silent: false
 
-  // Toasts: lista simple
   property var toasts: []
 
   function pushToast(n) {
@@ -61,9 +58,10 @@ Singleton {
         ref: n
       }
 
-      // prepend
       root.items = [it, ...root.items]
-      root.pushToast(n)
+      if (!Notifs.silent) {
+        root.pushToast(n)
+      }
     }
   }
 }

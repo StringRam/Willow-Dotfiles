@@ -25,6 +25,13 @@ Item {
       Item { width: 1; height: 1 } // spacer
 
       Button {
+        text: Notifs.silent ? "Silencio: ON" : "Silencio: OFF"
+        checkable: true
+        checked: Notifs.silent
+        onToggled: Notifs.silent = checked
+      }
+
+      Button {
         text: "Clear"
         onClicked: Notifs.clearAll()
       }

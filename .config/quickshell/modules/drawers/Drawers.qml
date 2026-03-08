@@ -62,18 +62,39 @@ Scope {
             }
           }
 
-          // ✅ SIDEPANEL (sale desde la derecha, “tronco”)
+          // ✅ CLICK-OUT SCRIM (cierra el sidepanel al clickear fuera)
+          // Lo ponemos ANTES del sideWrapper para que quede debajo del panel
+          Item {
+            id: sideScrim
+            anchors.fill: parent
+            visible: sideWrapper.t > 0
+            z: sideWrapper.z - 1
+
+            MouseArea {
+              anchors.fill: parent
+              onClicked: Visibility.sidepanelOpen = false
+            }
+          }
+
+          // ✅ SIDEPANEL (sale desde la derecha)
           DrawersUI.SlidePanel {
             id: sideWrapper
             t: Visibility.sidepanelOpen ? 1 : 0
 
+            // ✅ NO tocar el ancho: esto era lo que te funcionaba
             targetW: 360
+
             topY: host.drawerTop
             bottomY: host.height + host.rounding
+            rightEdgeX: host.width + 18
 
-            rightEdgeX: host.width + 18 //- bar.implicitWidth
+            // Importante: el panel está arriba del scrim
+            z: 50
 
-            SideUI.SidePanel { anchors.fill: parent; inset: host.rounding}
+            SideUI.SidePanel {
+              anchors.fill: parent
+              inset: host.rounding
+            }
           }
 
           // HITBOXES

@@ -15,15 +15,16 @@ Item {
 
   property int inset: 18
 
-  // ---- calendar state (local, fase 1) ----
+  // ---- estado local ----
   property date currentMonth: new Date()
   property date selectedDate: new Date()
+  property var selectedEvent: null
 
   function addMonths(baseDate, delta) {
-    const d = new Date(baseDate);
-    d.setDate(1);
-    d.setMonth(d.getMonth() + delta);
-    return d;
+    const d = new Date(baseDate)
+    d.setDate(1)
+    d.setMonth(d.getMonth() + delta)
+    return d
   }
 
   readonly property int _pad: Appearance.padding.normal + root.inset
@@ -31,13 +32,26 @@ Item {
   implicitWidth: mainCol.implicitWidth + _pad * 2
   implicitHeight: mainCol.implicitHeight + _pad * 2
 
+  Connections {
+    target: S.SidepanelState
+
+    function onTabIndexChanged() {
+      titleClip.slideTo(S.SidepanelState.tabLabel(), S.SidepanelState.slideDir)
+
+      // al volver a Calendar, limpiamos el evento seleccionado
+      if (S.SidepanelState.tabIndex === 0) {
+        root.selectedEvent = null
+      }
+    }
+  }
+
   ColumnLayout {
     id: mainCol
     anchors.fill: parent
     anchors.margins: root._pad
     spacing: Appearance.spacing.normal
 
-    // ---- Tabs (reemplaza el título "Sidepanel") ----
+    // ---- Header: título animado + botón ">" ----
     RowLayout {
       Layout.fillWidth: true
       spacing: Appearance.spacing.small
@@ -48,16 +62,13 @@ Item {
         height: 26
         clip: true
 
-        // título actual y el siguiente para animar el swap
-        property string currentText: S.SidepanelState.tabLabel()
         property string incomingText: ""
 
-        // “capas” de texto
         Text {
           id: titleA
           anchors.verticalCenter: parent.verticalCenter
           x: 0
-          text: titleClip.currentText
+          text: S.SidepanelState.tabLabel()
           color: "#e5e5e5"
           font.pixelSize: 16
           font.bold: true
@@ -75,26 +86,20 @@ Item {
         }
 
         function slideTo(newText, dir) {
-          // dir: +1 => entra desde derecha, -1 => entra desde izquierda
           const w = titleClip.width
           titleClip.incomingText = newText
 
-          // posicion inicial del incoming fuera de pantalla
           titleB.x = dir > 0 ? w : -w
           titleB.opacity = 1
 
-          // animar: A sale, B entra
           animA.from = 0
-          animA.to   = dir > 0 ? -w : w
+          animA.to = dir > 0 ? -w : w
 
           animB.from = titleB.x
-          animB.to   = 0
+          animB.to = 0
 
           fadeA.from = 1
-          fadeA.to   = 0
-
-          fadeB.from = 1
-          fadeB.to   = 1
+          fadeA.to = 0
 
           seq.restart()
         }
@@ -104,28 +109,36 @@ Item {
           running: false
 
           ParallelAnimation {
-            PropertyAnimation { id: animA; target: titleA; property: "x"; duration: 180; easing.type: Easing.OutCubic }
-            PropertyAnimation { id: animB; target: titleB; property: "x"; duration: 180; easing.type: Easing.OutCubic }
-            PropertyAnimation { id: fadeA; target: titleA; property: "opacity"; duration: 140 }
+            PropertyAnimation {
+              id: animA
+              target: titleA
+              property: "x"
+              duration: 180
+              easing.type: Easing.OutCubic
+            }
+            PropertyAnimation {
+              id: animB
+              target: titleB
+              property: "x"
+              duration: 180
+              easing.type: Easing.OutCubic
+            }
+            PropertyAnimation {
+              id: fadeA
+              target: titleA
+              property: "opacity"
+              duration: 140
+            }
           }
 
           ScriptAction {
             script: {
-              // swap: B pasa a ser A
               titleA.text = titleClip.incomingText
               titleA.x = 0
               titleA.opacity = 1
               titleB.opacity = 0
               titleB.x = 0
             }
-          }
-        }
-
-        // si el estado cambia desde afuera, sincronizamos
-        Connections {
-          target: S.SidepanelState
-          function onTabIndexChanged() {
-            titleClip.slideTo(S.SidepanelState.tabLabel(), S.SidepanelState.slideDir)
           }
         }
       }
@@ -136,7 +149,7 @@ Item {
       }
     }
 
-    // ---- Card principal: cambia según tab ----
+    // ---- Card principal ----
     StyledRect {
       id: mainCard
       Layout.fillWidth: true
@@ -156,23 +169,22 @@ Item {
         width: parent.width - mainCard._innerPad * 2
         spacing: Appearance.spacing.small
 
-        // Header del mes SOLO cuando estamos en Calendar
         Side.CalendarHeader {
           Layout.fillWidth: true
-          visible: S.SidepanelState.tab === "calendar"
+          visible: S.SidepanelState.tabIndex === 0
           monthDate: root.currentMonth
           onPrev: root.currentMonth = root.addMonths(root.currentMonth, -1)
           onNext: root.currentMonth = root.addMonths(root.currentMonth, +1)
         }
 
-        // Vista según pestaña
         Loader {
           Layout.fillWidth: true
-          sourceComponent: (S.SidepanelState.tabIndex === 1) ? scheduleComp : calendarComp
+          sourceComponent: S.SidepanelState.tabIndex === 1 ? scheduleComp : calendarComp
         }
 
         Component {
           id: calendarComp
+
           Side.MonthGrid {
             width: mainWrapper.width
             monthDate: root.currentMonth
@@ -183,22 +195,24 @@ Item {
 
         Component {
           id: scheduleComp
+
           Side.WeekSchedule {
             width: mainWrapper.width
-            // Por ahora: alto fijo funcional (lo refinamos con tu layout final)
             height: 360
             selectedDate: root.selectedDate
+            onSelectDate: (d) => root.selectedDate = d
+            onSelectEvent: (ev) => root.selectedEvent = ev
           }
         }
       }
     }
 
-    // resorte para empujar la agenda al fondo
+    // resorte
     Item { Layout.fillHeight: true }
 
-    // ---- agenda card (anclada abajo) ----
+    // ---- Card inferior contextual ----
     StyledRect {
-      id: agendaCard
+      id: bottomCard
       Layout.fillWidth: true
 
       radius: Appearance.rounding.large
@@ -207,24 +221,47 @@ Item {
       border.color: Colours.palette.m3outlineVariant
 
       property int _innerPad: Appearance.padding.large
-      implicitHeight: agendaWrapper.implicitHeight + _innerPad * 2
+      implicitHeight: bottomWrapper.implicitHeight + _innerPad * 2
 
       ColumnLayout {
-        id: agendaWrapper
-        x: agendaCard._innerPad
-        y: agendaCard._innerPad
-        width: parent.width - agendaCard._innerPad * 2
+        id: bottomWrapper
+        x: bottomCard._innerPad
+        y: bottomCard._innerPad
+        width: parent.width - bottomCard._innerPad * 2
         spacing: Appearance.spacing.small
 
-        Side.AgendaHeader {
+        Loader {
           Layout.fillWidth: true
-          date: root.selectedDate
+          sourceComponent: S.SidepanelState.tabIndex === 1 ? eventDetailsComp : agendaComp
         }
 
-        Side.AgendaList {
-          Layout.fillWidth: true
-          date: root.selectedDate
-          maxVisible: 4
+        Component {
+          id: agendaComp
+
+          ColumnLayout {
+            Layout.fillWidth: true
+            spacing: Appearance.spacing.small
+
+            Side.AgendaHeader {
+              Layout.fillWidth: true
+              date: root.selectedDate
+            }
+
+            Side.AgendaList {
+              Layout.fillWidth: true
+              date: root.selectedDate
+              maxVisible: 4
+            }
+          }
+        }
+
+        Component {
+          id: eventDetailsComp
+
+          Side.EventDetailsCard {
+            Layout.fillWidth: true
+            event: root.selectedEvent
+          }
         }
       }
     }

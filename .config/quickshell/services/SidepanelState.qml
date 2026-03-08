@@ -2,10 +2,7 @@ pragma Singleton
 import QtQuick
 
 QtObject {
-  // 0 = Calendar, 1 = Schedule
   property int tabIndex: 0
-
-  // +1 cuando vamos "a la derecha", -1 al revés
   property int slideDir: +1
 
   function toggle() {

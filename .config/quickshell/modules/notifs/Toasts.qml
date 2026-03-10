@@ -14,10 +14,9 @@ Scope {
       screen: modelData
       name: "toasts"
 
-      visible: Notifs.toasts.length > 0
+      visible: Notifs.toastsAllowed && Notifs.toasts.length > 0
       WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-      // ✅ Click-through fuera del área real de los toasts
       mask: Region { item: hitbox }
 
       Item {
@@ -27,7 +26,6 @@ Scope {
         anchors.margins: 12
         y: 4
 
-        // ✅ que el hitbox sea “tight” (solo lo que ocupa la columna)
         width: toastColumn.implicitWidth
         height: toastColumn.implicitHeight
 
@@ -37,6 +35,7 @@ Scope {
 
           Repeater {
             model: Notifs.toasts
+
             delegate: Rectangle {
               id: toast
               required property var modelData
@@ -47,10 +46,8 @@ Scope {
               border.width: 1
               border.color: "#2a2a2a"
 
-              // ✅ altura real (la clave)
               implicitHeight: content.implicitHeight + 24
 
-              // Estado inicial: aparece arriba, cae un poco, pausa, luego cae + fade
               y: -22
               opacity: 0
 
@@ -82,19 +79,42 @@ Scope {
                 id: anim
                 running: true
 
-                // 1) aparece + cae a posición
                 ParallelAnimation {
-                  NumberAnimation { target: toast; property: "y"; from: -22; to: 0; duration: 180; easing.type: Easing.OutCubic }
-                  NumberAnimation { target: toast; property: "opacity"; from: 0; to: 1; duration: 120; easing.type: Easing.OutQuad }
+                  NumberAnimation {
+                    target: toast
+                    property: "y"
+                    from: -22
+                    to: 0
+                    duration: 180
+                    easing.type: Easing.OutCubic
+                  }
+                  NumberAnimation {
+                    target: toast
+                    property: "opacity"
+                    from: 0
+                    to: 1
+                    duration: 120
+                    easing.type: Easing.OutQuad
+                  }
                 }
 
-                // 2) pausa
                 PauseAnimation { duration: 2200 }
 
-                // 3) cae un poco más y se desvanece
                 ParallelAnimation {
-                  NumberAnimation { target: toast; property: "y"; to: 16; duration: 900; easing.type: Easing.InQuad }
-                  NumberAnimation { target: toast; property: "opacity"; to: 0; duration: 900; easing.type: Easing.InQuad }
+                  NumberAnimation {
+                    target: toast
+                    property: "y"
+                    to: 16
+                    duration: 900
+                    easing.type: Easing.InQuad
+                  }
+                  NumberAnimation {
+                    target: toast
+                    property: "opacity"
+                    to: 0
+                    duration: 900
+                    easing.type: Easing.InQuad
+                  }
                 }
 
                 ScriptAction { script: Notifs.dropToast(modelData.key) }

@@ -50,7 +50,7 @@ Item {
           Text {
             anchors.centerIn: parent
             text: modelData
-            color: Qt.rgba(Colours.palette.m3onSurface.r, Colours.palette.m3onSurface.g, Colours.palette.m3onSurface.b, 0.75)
+            color: Colours.withAlpha(Colours.palette.m3onSurface, 0.75)
             font.family: Appearance.font.family.ui
             font.pixelSize: 10
           }

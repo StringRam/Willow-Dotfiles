@@ -44,7 +44,7 @@ Item {
     delegate: StyledRect {
       width: ListView.view.width
       radius: Appearance.rounding.normal
-      color: Qt.rgba(1, 1, 1, 0.03)
+      color: Colours.withAlpha(Colours.palette.m3onSurface, 0.03)
 
       implicitHeight: root._rowH
 
@@ -62,7 +62,7 @@ Item {
           Layout.fillWidth: true
           text: modelData.title
           color: modelData.done
-            ? Qt.rgba(Colours.palette.m3onSurface.r, Colours.palette.m3onSurface.g, Colours.palette.m3onSurface.b, 0.55)
+            ? Colours.withAlpha(Colours.palette.m3onSurface, 0.55)
             : Colours.palette.m3onSurface
           elide: Text.ElideRight
         }
@@ -79,6 +79,6 @@ Item {
 
     visible: root.mockItems.length === 0
     text: "(sin tareas para este día)"
-    color: Qt.rgba(Colours.palette.m3onSurface.r, Colours.palette.m3onSurface.g, Colours.palette.m3onSurface.b, 0.65)
+    color: Colours.withAlpha(Colours.palette.m3onSurface, 0.65)
   }
 }

@@ -10,8 +10,6 @@ Column {
 
   TrayMenuPopup { id: menuPopup }
 
-  function clamp(v, lo, hi) { return Math.max(lo, Math.min(v, hi)) }
-
   function openMenuFor(iconItem, trayItem) {
     if (!trayItem.hasMenu || !trayItem.menu) return
     if (!tray.parentWindow) return
@@ -44,12 +42,10 @@ Column {
     menuPopup.menuWidth = menuW
 
     // X fijo pegado al bar (hacia la izquierda)
-    let x = barLeft - gap - menuW
-    x = clamp(x, 4, screenW - menuW - 4)
+    const x = Math.max(4, Math.min(barLeft - gap - menuW, screenW - menuW - 4))
 
     // Y centrado en el ícono y clamped
-    let y = iconGlobalY - 6; // el menú “nace” alineado al ícono
-    y = clamp(y, 4, screenH - menuH - 4);
+    const y = Math.max(4, Math.min(iconGlobalY - 6, screenH - menuH - 4))
 
     menuPopup.anchorX = Math.round(x)
     menuPopup.anchorY = Math.round(y)

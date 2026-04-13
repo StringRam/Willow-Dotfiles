@@ -56,19 +56,18 @@ Item {
         component IconAction: Item {
           id: btn
           required property string iconGlyph
-          required property string command
+          property string command: ""
+          signal activated()
 
           implicitWidth: 52
           implicitHeight: 52
 
-          // ✅ si en algún momento agregás efectos al Item, queda redondeado/recortado
           clip: true
 
           StyledRect {
             id: bg
             anchors.fill: parent
 
-            // ✅ ya estaba bien; lo mantengo
             radius: Appearance.rounding.full
 
             color: Qt.alpha(Colours.palette.m3surfaceContainerHigh, mouse.pressed ? 0.85 : 1.0)
@@ -89,7 +88,10 @@ Item {
             id: mouse
             anchors.fill: parent
             hoverEnabled: true
-            onClicked: Quickshell.execDetached(["sh", "-c", btn.command])
+            onClicked: {
+              btn.activated()
+              if (btn.command !== "") Quickshell.execDetached(["sh", "-c", btn.command])
+            }
           }
         }
 
@@ -97,6 +99,11 @@ Item {
         IconAction { iconGlyph: "󰍃"; command: "hyprctl dispatch exit" }
         IconAction { iconGlyph: "󰜉"; command: "systemctl reboot" }
         IconAction { iconGlyph: "󰐥"; command: "systemctl poweroff" }
+        IconAction {
+          // Material Symbols: wallpaper (U+E1BC)
+          iconGlyph: "\ue1bc"
+          onActivated: Visibility.wallpaperPickerOpen = true
+        }
 
         Item { Layout.fillHeight: true }
       }

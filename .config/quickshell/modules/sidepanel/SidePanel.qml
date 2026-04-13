@@ -7,7 +7,6 @@ import QtQuick.Layouts
 import qs.components
 import qs.config
 import qs.services
-import qs.services as S
 import qs.modules.sidepanel.components as Side
 
 Item {
@@ -33,13 +32,13 @@ Item {
   implicitHeight: mainCol.implicitHeight + _pad * 2
 
   Connections {
-    target: S.SidepanelState
+    target: SidepanelState
 
     function onTabIndexChanged() {
-      titleClip.slideTo(S.SidepanelState.tabLabel(), S.SidepanelState.slideDir)
+      titleClip.slideTo(SidepanelState.tabLabel(), SidepanelState.slideDir)
 
       // al volver a Calendar, limpiamos el evento seleccionado
-      if (S.SidepanelState.tabIndex === 0) {
+      if (SidepanelState.tabIndex === 0) {
         root.selectedEvent = null
       }
     }
@@ -68,8 +67,8 @@ Item {
           id: titleA
           anchors.verticalCenter: parent.verticalCenter
           x: 0
-          text: S.SidepanelState.tabLabel()
-          color: "#e5e5e5"
+          text: SidepanelState.tabLabel()
+          color: Colours.palette.m3onSurface
           font.pixelSize: 16
           font.bold: true
         }
@@ -80,7 +79,7 @@ Item {
           x: 0
           opacity: 0
           text: titleClip.incomingText
-          color: "#e5e5e5"
+          color: Colours.palette.m3onSurface
           font.pixelSize: 16
           font.bold: true
         }
@@ -145,7 +144,7 @@ Item {
 
       Button {
         text: ">"
-        onClicked: S.SidepanelState.toggle()
+        onClicked: SidepanelState.toggle()
       }
     }
 
@@ -171,7 +170,7 @@ Item {
 
         Side.CalendarHeader {
           Layout.fillWidth: true
-          visible: S.SidepanelState.tabIndex === 0
+          visible: SidepanelState.tabIndex === 0
           monthDate: root.currentMonth
           onPrev: root.currentMonth = root.addMonths(root.currentMonth, -1)
           onNext: root.currentMonth = root.addMonths(root.currentMonth, +1)
@@ -179,7 +178,7 @@ Item {
 
         Loader {
           Layout.fillWidth: true
-          sourceComponent: S.SidepanelState.tabIndex === 1 ? scheduleComp : calendarComp
+          sourceComponent: SidepanelState.tabIndex === 1 ? scheduleComp : calendarComp
         }
 
         Component {
@@ -232,7 +231,7 @@ Item {
 
         Loader {
           Layout.fillWidth: true
-          sourceComponent: S.SidepanelState.tabIndex === 1 ? eventDetailsComp : agendaComp
+          sourceComponent: SidepanelState.tabIndex === 1 ? eventDetailsComp : agendaComp
         }
 
         Component {

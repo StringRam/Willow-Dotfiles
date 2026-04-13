@@ -3,6 +3,7 @@ import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 
+import qs.services
 import qs.components.containers
 
 Scope {
@@ -81,9 +82,9 @@ Scope {
         width: root.menuWidth
         radius: root.radius
         clip: true
-        color: "#141414"
+        color: Colours.palette.m3background
         border.width: 1
-        border.color: "#2a2a2a"
+        border.color: Colours.palette.m3outline
 
         implicitHeight: col.implicitHeight + root.pad * 2
 
@@ -119,7 +120,7 @@ Scope {
                 width: row.width - 12
                 height: 1
                 y: 4
-                color: "#2a2a2a"
+                color: Colours.palette.m3outline
               }
 
               Rectangle {
@@ -127,7 +128,7 @@ Scope {
                 anchors.fill: parent
                 visible: !row.modelData.isSeparator
                 radius: 8
-                color: ma.containsMouse ? "#1f1f1f" : "transparent"
+                color: ma.containsMouse ? Colours.palette.m3surfaceHighlight : "transparent"
                 opacity: row.modelData.enabled ? 1 : 0.45
               }
 
@@ -141,21 +142,21 @@ Scope {
                   text: row.modelData.buttonType !== 0
                         ? (row.modelData.checkState === Qt.Checked ? "●" : "○")
                         : ""
-                  color: "#cfcfcf"
+                  color: Colours.palette.m3onSurfaceVariant
                   Layout.preferredWidth: 16
                   horizontalAlignment: Text.AlignHCenter
                 }
 
                 Text {
                   text: row.modelData.text
-                  color: "#e5e5e5"
+                  color: Colours.palette.m3onSurface
                   elide: Text.ElideRight
                   Layout.fillWidth: true
                 }
 
                 Text {
                   text: row.modelData.hasChildren ? "›" : ""
-                  color: "#9a9a9a"
+                  color: Colours.palette.m3onSurfaceMuted
                   Layout.preferredWidth: 14
                   horizontalAlignment: Text.AlignRight
                 }

@@ -49,6 +49,7 @@ Item {
     if (t.startsWith(">") || t.startsWith(":")) return { mode: "run", q: t.slice(1).trim() }
     if (t.startsWith("w:") || t.startsWith("w ")) return { mode: "window", q: t.slice(2).trim() }
     if (t.startsWith("a:") || t.startsWith("a ")) return { mode: "drun", q: t.slice(2).trim() }
+    if (t.startsWith("bg:") || t.startsWith("bg ")) return { mode: "wallpaper", q: t.slice(3).trim() }
 
     return { mode: launcherModel.mode, q: raw }
   }
@@ -82,6 +83,12 @@ Item {
       }
       return
     }
+
+    if (obj.kind === "wallpaper" && obj.path) {
+      Wallpapers.apply(obj.path)
+      closeLauncher()
+      return
+    }
   }
 
   function execSelected() {
@@ -100,9 +107,9 @@ Item {
       width: 600
       height: 500
       radius: 16
-      color: "#141414"
+      color: Colours.palette.m3background
       border.width: 1
-      border.color: "#2a2a2a"
+      border.color: Colours.palette.m3outline
       anchors.centerIn: parent
 
       MouseArea { anchors.fill: parent; acceptedButtons: Qt.AllButtons }
@@ -117,11 +124,11 @@ Item {
           spacing: 8
 
           Text {
-            text: launcherModel.mode === "drun" ? "Apps" : (launcherModel.mode === "window" ? "Windows" : "Run")
-            color: "#bdbdbd"
+            text: ({ drun: "Apps", window: "Windows", run: "Run", wallpaper: "Wallpapers" })[launcherModel.mode] ?? "Apps"
+            color: Colours.palette.m3onSurfaceVariant
           }
           Item { Layout.fillWidth: true }
-          Text { text: "Tab: mode  |  Ctrl+1/2/3  |  Esc"; color: "#6f6f6f" }
+          Text { text: "Tab: modo  |  Ctrl+1/2/3/4  |  bg:  |  Esc"; color: Colours.palette.m3onSurfaceMuted }
         }
 
         TextField {
@@ -159,9 +166,9 @@ Item {
             if (ev.key === Qt.Key_Return || ev.key === Qt.Key_Enter) { execSelected(); ev.accepted = true; return }
 
             if (ev.key === Qt.Key_Tab) {
-              if (launcherModel.mode === "drun") setMode("window")
-              else if (launcherModel.mode === "window") setMode("run")
-              else setMode("drun")
+              const cycle = ["drun", "window", "run", "wallpaper"]
+              const next = cycle[(cycle.indexOf(launcherModel.mode) + 1) % cycle.length]
+              setMode(next)
               launcherModel.history = hist.recentKeys
               ev.accepted = true
               return
@@ -171,6 +178,7 @@ Item {
               if (ev.key === Qt.Key_1) { setMode("drun"); launcherModel.history = hist.recentKeys; ev.accepted = true; return }
               if (ev.key === Qt.Key_2) { setMode("window"); launcherModel.history = hist.recentKeys; ev.accepted = true; return }
               if (ev.key === Qt.Key_3) { setMode("run"); launcherModel.history = hist.recentKeys; ev.accepted = true; return }
+              if (ev.key === Qt.Key_4) { setMode("wallpaper"); launcherModel.history = hist.recentKeys; ev.accepted = true; return }
             }
           }
         }
@@ -197,34 +205,47 @@ Item {
             radius: 10
 
             readonly property bool active: (index === list.currentIndex)
-            color: active ? "#1f1f1f" : (ma.containsMouse ? "#191919" : "transparent")
+            color: active ? Colours.palette.m3surfaceHighlight : (ma.containsMouse ? Colours.palette.m3surfaceContainerLow : "transparent")
 
             RowLayout {
               anchors.fill: parent
               anchors.margins: 10
               spacing: 10
 
-              // ✅ Icono (apps principalmente)
+              // Icono: thumbnail para wallpapers, icono de tema para el resto
               Item {
                 width: 26
                 height: 26
                 Layout.alignment: Qt.AlignVCenter
 
+                Image {
+                  anchors.fill: parent
+                  visible: model.kind === "wallpaper"
+                  source: visible ? ("file://" + (model.path || "")) : ""
+                  fillMode: Image.PreserveAspectCrop
+                  asynchronous: true
+                }
+
                 IconImage {
                   anchors.fill: parent
-                  // icon es el nombre del tema o ruta; iconPath resuelve
-                  source: (model.icon && model.icon !== "")
-                            ? Quickshell.iconPath(model.icon, true)
-                            : ""
-                  visible: source !== ""
+                  visible: model.kind !== "wallpaper" && (model.icon || "") !== ""
+                  source: visible ? Quickshell.iconPath(model.icon, true) : ""
                 }
               }
 
               Text {
                 Layout.fillWidth: true
                 text: model.label
-                color: "#e5e5e5"
+                color: Colours.palette.m3onSurface
                 elide: Text.ElideRight
+              }
+
+              // Indicador de wallpaper activo
+              Text {
+                visible: model.kind === "wallpaper" && (model.path || "") === Wallpapers.current
+                text: "✓"
+                color: Colours.palette.m3primary
+                font.pixelSize: 14
               }
             }
 

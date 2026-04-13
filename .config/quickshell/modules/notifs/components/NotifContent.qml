@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import qs.services
@@ -19,7 +21,7 @@ Item {
         text: "Notificaciones"
         font.pixelSize: 16
         font.bold: true
-        color: "#e5e5e5"
+        color: Colours.palette.m3onSurface
       }
 
       Item { width: 1; height: 1 } // spacer
@@ -51,9 +53,9 @@ Item {
 
         width: ListView.view.width
         radius: 12
-        color: "#1a1a1a"
+        color: Colours.palette.m3surfaceContainerLow
         border.width: 1
-        border.color: "#262626"
+        border.color: Colours.palette.m3outline
 
         implicitHeight: content.implicitHeight + 20
 
@@ -64,19 +66,19 @@ Item {
           spacing: 6
 
           Text {
-            text: modelData.summary || "(sin título)"
-            color: "#eaeaea"
+            text: card.modelData.summary || "(sin título)"
+            color: Colours.palette.m3onSurface
             font.bold: true
             wrapMode: Text.Wrap
             width: parent.width
           }
 
           Text {
-            text: modelData.body || ""
-            color: "#bdbdbd"
+            text: card.modelData.body || ""
+            color: Colours.palette.m3onSurfaceVariant
             wrapMode: Text.Wrap
             width: parent.width
-            visible: (modelData.body || "") !== ""
+            visible: (card.modelData.body || "") !== ""
           }
 
           Row {
@@ -88,10 +90,10 @@ Item {
             Button {
               text: "Dismiss"
               onClicked: {
-                const n = modelData.ref
+                const n = card.modelData.ref
                 if (n && n.dismiss) n.dismiss()
                 else if (n) n.tracked = false
-                Notifs.dropItem(modelData.key)
+                Notifs.dropItem(card.modelData.key)
               }
             }
           }

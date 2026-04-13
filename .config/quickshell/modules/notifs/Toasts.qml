@@ -42,9 +42,9 @@ Scope {
 
               width: 320
               radius: 14
-              color: "#161616"
+              color: Colours.palette.m3background
               border.width: 1
-              border.color: "#2a2a2a"
+              border.color: Colours.palette.m3outline
 
               implicitHeight: content.implicitHeight + 24
 
@@ -59,19 +59,19 @@ Scope {
                 spacing: 6
 
                 Text {
-                  text: modelData.summary || "(sin título)"
-                  color: "#e5e5e5"
+                  text: toast.modelData.summary || "(sin título)"
+                  color: Colours.palette.m3onSurface
                   font.bold: true
                   wrapMode: Text.Wrap
                   width: parent.width
                 }
 
                 Text {
-                  text: modelData.body || ""
-                  color: "#bdbdbd"
+                  text: toast.modelData.body || ""
+                  color: Colours.palette.m3onSurfaceVariant
                   wrapMode: Text.Wrap
                   width: parent.width
-                  visible: (modelData.body || "") !== ""
+                  visible: (toast.modelData.body || "") !== ""
                 }
               }
 
@@ -117,7 +117,7 @@ Scope {
                   }
                 }
 
-                ScriptAction { script: Notifs.dropToast(modelData.key) }
+                ScriptAction { script: Notifs.dropToast(toast.modelData.key) }
               }
             }
           }

@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import qs.services
 
 ListModel {
   id: root
@@ -28,6 +29,7 @@ ListModel {
     let ti = 0
     let score = 0
     let streak = 0
+    let tiPrev = -1
 
     for (let qi = 0; qi < q.length; qi++) {
       const qc = q[qi]
@@ -55,12 +57,12 @@ ListModel {
       // penalización leve por saltos grandes
       if (qi > 0) score -= Math.min(8, Math.max(0, found - tiPrev - 1))
 
-      var tiPrev = found
+      tiPrev = found
       ti = found + 1
     }
 
     // bonus: query corta y match temprano
-    score += Math.max(0, 30 - (tiPrev || 0))
+    score += Math.max(0, 30 - (tiPrev < 0 ? 0 : tiPrev))
     return score
   }
 
@@ -76,6 +78,30 @@ ListModel {
     clear()
     const raw = filterText || ""
     const q = raw.trim()
+
+    if (mode === "wallpaper") {
+      const files = Wallpapers.files
+      const arr = []
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i]
+        const basename = f.split("/").pop()
+        const nameNoExt = basename.replace(/\.[^.]+$/, "")
+        const s = q === "" ? 0 : fuzzyScore(q, nameNoExt)
+        if (q === "" || s > -1e8) {
+          arr.push({
+            kind: "wallpaper",
+            key: "wallpaper:" + f,
+            label: nameNoExt,
+            icon: "",
+            path: f,
+            score: s
+          })
+        }
+      }
+      arr.sort((a, b) => (b.score - a.score) || a.label.localeCompare(b.label))
+      for (let i = 0; i < arr.length && i < limit; i++) append(arr[i])
+      return
+    }
 
     if (mode === "run") {
       if (q !== "") {

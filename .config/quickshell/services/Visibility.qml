@@ -21,6 +21,11 @@ Singleton {
   property bool sessionOpen: false
 
   // =======================
+  // WALLPAPER PICKER
+  // =======================
+  property bool wallpaperPickerOpen: false
+
+  // =======================
   // NOTIFS (hover + pin)
   // =======================
   property bool notifsPinned: false
@@ -127,6 +132,7 @@ Singleton {
     launcherOpen = false
     sidepanelOpen = false
     sessionOpen = false
+    wallpaperPickerOpen = false
     closeNotifs()
     closeDash()
   }

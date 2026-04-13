@@ -68,7 +68,7 @@ Singleton {
     // La coma vacía antes del path aplica el wallpaper a todos los monitores.
     Quickshell.execDetached([
       "bash", "-c",
-      `hyprctl hyprpaper preload '${path}' && hyprctl hyprpaper wallpaper ',${path}'`
+      `hyprctl hyprpaper wallpaper ',${path}'`
     ])
 
     // Persistir en hyprpaper.conf para que sobreviva reinicios.

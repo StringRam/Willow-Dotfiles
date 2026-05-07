@@ -19,8 +19,7 @@ Personal dotfiles for my Quickshell-Hyprland setup, a streamlined Linux workflow
 
 - Hyprland configuration with custom Quickshell theming
 - Custom scripts for automation and workflow
-- Rofi, Kitty, and Wlogout configs
-- Fastfetch and pywal integration
+- Kitty and Zsh configs
 - Easy wallpaper switching and color sync
 
 
@@ -44,7 +43,6 @@ chmod +x install.sh
 Dotfiles/
 ├── hypr/           # Hyprland configs and scripts
 ├── kitty/          # Kitty terminal themes and sessions
-├── rofi/           # Rofi launcher themes
 ├── wal/            # Pywal templates for color syncing
 └── fastfetch/      # Fastfetch config for system info
 ```

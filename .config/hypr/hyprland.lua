@@ -35,7 +35,7 @@ end)
 hl.env("XCURSOR_SIZE", "26")
 hl.env("HYPRCURSOR_SIZE", "26")
 
-hl.env("HYPRSHOT_DIR", "~/Pictures/Screenshots")
+hl.env("HYPRSHOT_DIR", "Pictures/Screenshots")
 hl.env("_JAVA_OPTIONS", "-Dawt.useSystemAAFontSettings=on")
 hl.env("QML_IMPORT_PATH", "/usr/lib/qt6/bin/qmlls")
 

@@ -103,7 +103,7 @@ hl.window_rule({
 })
 
 -- Allow tearing and inhibit idle for Steam games.
-hl.window_rule({ match = { class = "steam_app_[0-9]+" }, immediate = true })
+--hl.window_rule({ match = { class = "steam_app_[0-9]+" }, immediate = true })
 hl.window_rule({ match = { class = "steam_app_[0-9]+" }, idle_inhibit = "always" })
 
 -------------------------

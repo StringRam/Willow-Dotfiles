@@ -62,8 +62,6 @@ Scope {
             }
           }
 
-          // ✅ CLICK-OUT SCRIM (cierra el sidepanel al clickear fuera)
-          // Lo ponemos ANTES del sideWrapper para que quede debajo del panel
           Item {
             id: sideScrim
             anchors.fill: parent

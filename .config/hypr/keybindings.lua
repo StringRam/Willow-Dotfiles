@@ -17,9 +17,6 @@ local mainMod = "SUPER"
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd("uwsm app -- " .. terminal))
 hl.bind(mainMod .. " + X", hl.dsp.window.close())
 
--- Since this config uses UWSM, prefer a graceful UWSM stop over hl.dsp.exit().
-hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("uwsm stop"))
-
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd("uwsm app -- " .. fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
